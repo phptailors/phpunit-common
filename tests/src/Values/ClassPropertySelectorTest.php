@@ -3,7 +3,7 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
@@ -61,26 +61,25 @@ final class ClassPropertySelectorTest extends TestCase
     {
         return [
             // #0
-            'string'                    => [
+            'string' => [
                 'subject' => 'foo',
                 'expect'  => false,
             ],
 
             // #1
-            'array'                     => [
+            'array' => [
                 'subject' => [],
                 'expect'  => false,
             ],
 
-            'class'                     => [
+            'class' => [
                 'subject' => self::class,
                 'expect'  => true,
             ],
 
             // #2
-            'object'                    => [
-                'subject' => get_class(new class() {
-                }),
+            'object' => [
+                'subject' => get_class(new class() {}),
                 'expect'  => true,
             ],
 
@@ -115,7 +114,7 @@ final class ClassPropertySelectorTest extends TestCase
         return [
             // #0
             [
-                'class'  => get_class(new class() {
+                'class' => get_class(new class() {
                     public static $foo = 'FOO';
                 }),
                 'key'    => 'foo',
@@ -125,7 +124,7 @@ final class ClassPropertySelectorTest extends TestCase
 
             // #1
             [
-                'class'  => get_class(new class() {
+                'class' => get_class(new class() {
                     public static $foo = 'FOO';
                 }),
                 'key'    => 'bar',
@@ -135,7 +134,7 @@ final class ClassPropertySelectorTest extends TestCase
 
             // #2
             [
-                'class'  => get_class(new class() {
+                'class' => get_class(new class() {
                     public static function foo()
                     {
                         return 'FOO';
@@ -148,7 +147,7 @@ final class ClassPropertySelectorTest extends TestCase
 
             // #3
             [
-                'class'  => get_class(new class() {
+                'class' => get_class(new class() {
                     public static function foo()
                     {
                         return 'FOO';
@@ -222,13 +221,23 @@ final class ClassPropertySelectorTest extends TestCase
         $selector = new ClassPropertySelector();
 
         if (PHP_VERSION_ID < 80000) {
-            $this->expectDeprecation();
-            $this->expectDeprecationMessage('should not be called statically');
+            // Because expectDeprecation() is removed in phpunit 10.
+            try {
+                set_error_handler(static function (int $severity, string $message): void {
+                    throw new \ErrorException($message, $severity);
+                });
+                $this->expectException(\ErrorException::class);
+                $this->expectExceptionMessage('should not be called statically');
+
+                $selector->select($class, 'foo()');
+            } finally {
+                restore_error_handler();
+            }
         } else {
             $this->expectException(\TypeError::class);
             $this->expectExceptionMessage('cannot be called statically');
+            $selector->select($class, 'foo()');
         }
-        $selector->select($class, 'foo()');
 
         // @codeCoverageIgnoreStart
     }

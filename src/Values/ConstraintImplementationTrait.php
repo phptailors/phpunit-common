@@ -3,7 +3,7 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
@@ -11,6 +11,7 @@
 namespace Tailors\PHPUnit\Values;
 
 use Tailors\PHPUnit\Comparator\ComparatorInterface;
+use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
  * @internal This trait is not covered by the backward compatibility promise
@@ -20,7 +21,7 @@ use Tailors\PHPUnit\Comparator\ComparatorInterface;
 trait ConstraintImplementationTrait
 {
     /**
-     * @throws \Tailors\PHPUnit\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function create(array $expected): self
     {
@@ -31,11 +32,11 @@ trait ConstraintImplementationTrait
 
         (new RecursiveComparatorValidator($comparator))->validate($expected, 1);
 
-        return new self($comparator, new Selection($selector, $expected), new RecursiveUnwrapper());
+        return new self($comparator, new ExpectedValuesSelection($selector, $expected), new RecursiveUnwrapper());
     }
 
     /**
-     * @throws \Tailors\PHPUnit\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     abstract protected static function validateExpectations(array $expected, int $argument, int $distance = 1): void;
 

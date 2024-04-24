@@ -3,7 +3,7 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
@@ -12,6 +12,7 @@ namespace Tailors\PHPUnit\Values;
 
 use Tailors\PHPUnit\Comparator\ComparatorInterface;
 use Tailors\PHPUnit\Comparator\IdentityComparator;
+use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
  * Example constraint class that extends the AbstractConstraint.
@@ -25,11 +26,9 @@ class ExampleConstraint extends AbstractConstraint
     use ConstraintImplementationTrait;
 
     /**
-     * @throws \Tailors\PHPUnit\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    protected static function validateExpectations(array $expected, int $argument, int $distance = 1): void
-    {
-    }
+    protected static function validateExpectations(array $expected, int $argument, int $distance = 1): void {}
 
     /**
      * Creates instance of ValueSelectorInterface.

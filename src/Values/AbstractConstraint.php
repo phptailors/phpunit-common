@@ -3,7 +3,7 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
@@ -13,13 +13,13 @@ namespace Tailors\PHPUnit\Values;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\LogicalNot;
 use PHPUnit\Framework\Constraint\Operator;
+use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Comparator\ComparisonFailure;
-use SebastianBergmann\Exporter\Exporter as SebastianBergmannExporter;
 use Tailors\PHPUnit\CircularDependencyException;
+use Tailors\PHPUnit\Common\Exporter;
 use Tailors\PHPUnit\Common\ShortFailureDescriptionTrait;
 use Tailors\PHPUnit\Comparator\ComparatorInterface;
 use Tailors\PHPUnit\Comparator\ComparatorWrapperInterface;
-use Tailors\PHPUnit\Exporter\Exporter;
 
 /**
  * Abstract base for constraints that examine values.
@@ -41,11 +41,6 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
      * @var RecursiveUnwrapperInterface
      */
     private $unwrapper;
-
-    /**
-     * @var null|Exporter
-     */
-    private $exporter;
 
     /**
      * @var ComparatorInterface
@@ -105,8 +100,7 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
      * @param string $description
      * @param bool   $returnResult
      *
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
      * @throws CircularDependencyException
      */
     final public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
@@ -125,8 +119,8 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
                 $f = new ComparisonFailure(
                     $this->expected,
                     $other,
-                    $this->exporter()->export($this->expected),
-                    $this->exporter()->export($actual)
+                    Exporter::export($this->expected, true),
+                    Exporter::export($actual, true)
                 );
             }
 
@@ -180,15 +174,6 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
         $expect = $this->unwrapper->unwrap($this->expected);
 
         return $this->comparator->compare($expect, $actual);
-    }
-
-    final protected function exporter(): SebastianBergmannExporter
-    {
-        if (null === $this->exporter) {
-            $this->exporter = new Exporter();
-        }
-
-        return $this->exporter;
     }
 
     /**
