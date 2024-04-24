@@ -3,24 +3,27 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
 
 namespace Tailors\PHPUnit\Comparator;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Comparator\IdentityComparator
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
+ *
+ * @coversNothing
  */
+#[CoversClass(IdentityComparator::class)]
 final class IdentityComparatorTest extends TestCase
 {
     public function testImplementsComparatorInterface(): void
@@ -50,11 +53,10 @@ final class IdentityComparatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provCompare
-     *
      * @param mixed $left
      * @param mixed $right
      */
+    #[DataProvider('provCompare')]
     public function testCompare($left, $right, bool $expect): void
     {
         $comparator = new IdentityComparator();

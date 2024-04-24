@@ -3,14 +3,20 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
 
 namespace Tailors\PHPUnit\Values;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\ReflectionException;
+use PHPUnit\Framework\MockObject\RuntimeException;
+use Tailors\PHPUnit\CircularDependencyException;
 use Tailors\PHPUnit\Constraint\TestCase;
 
 /**
@@ -33,7 +39,7 @@ abstract class ConstraintTestCase extends TestCase
      *
      * @codeCoverageIgnoreStart
      */
-    public function provCreateConstraint(): array
+    public static function provCreateConstraint(): array
     {
         return [
             'ConstraintTestCase.php:'.__LINE__ => [
@@ -48,14 +54,12 @@ abstract class ConstraintTestCase extends TestCase
     // @codeCoverageIgnoreEnd
 
     /**
-     * @dataProvider provCreateConstraint
-     *
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws ExpectationFailedException
      *
      * @psalm-param array{values:\PHPUnit\Framework\Constraint\Constraint} $expect
      */
+    #[DataProvider('provCreateConstraint')]
     final public function testCreateConstraint(array $args, array $expect): void
     {
         $constraint = $this->examineCreateConstraint($args);
@@ -63,11 +67,10 @@ abstract class ConstraintTestCase extends TestCase
     }
 
     /**
-     * @throws \PHPUnit\Framework\Exception
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \PHPUnit\Framework\MockObject\ReflectionException
-     * @throws \PHPUnit\Framework\MockObject\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws Exception
+     * @throws ExpectationFailedException
+     * @throws ReflectionException
+     * @throws RuntimeException
      */
     final public function testConstraintUnaryOperatorFailure(): void
     {
@@ -82,8 +85,7 @@ abstract class ConstraintTestCase extends TestCase
      * @param array $expect
      * @param mixed $actual
      *
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
      */
     final public function examineValuesMatchSucceeds(array $expect, $actual): void
     {
@@ -95,9 +97,8 @@ abstract class ConstraintTestCase extends TestCase
      * @param mixed  $actual
      * @param string $string
      *
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-     * @throws \Tailors\PHPUnit\CircularDependencyException
+     * @throws ExpectationFailedException
+     * @throws CircularDependencyException
      */
     final public function examineValuesMatchFails(array $expect, $actual, string $string): void
     {
@@ -112,8 +113,7 @@ abstract class ConstraintTestCase extends TestCase
      * @param array $expect
      * @param mixed $actual
      *
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
      */
     final public function examineNotValuesMatchSucceeds(array $expect, $actual): void
     {
@@ -125,8 +125,7 @@ abstract class ConstraintTestCase extends TestCase
      * @param mixed  $actual
      * @param string $string
      *
-     * @throws \PHPUnit\Framework\ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+     * @throws ExpectationFailedException
      */
     final public function examineNotValuesMatchFails(array $expect, $actual, string $string): void
     {

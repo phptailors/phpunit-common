@@ -3,27 +3,30 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
 
 namespace Tailors\PHPUnit\Values;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\AbstractPropertySelector
- * @covers \Tailors\PHPUnit\Values\AbstractValueSelector
- * @covers \Tailors\PHPUnit\Values\ObjectPropertySelector
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
+ *
+ * @coversNothing
  */
+#[CoversClass(AbstractPropertySelector::class)]
+#[CoversClass(AbstractValueSelector::class)]
+#[CoversClass(ObjectPropertySelector::class)]
 final class ObjectPropertySelectorTest extends TestCase
 {
     //
@@ -47,30 +50,29 @@ final class ObjectPropertySelectorTest extends TestCase
     //
 
     // @codeCoverageIgnoreStart
-    public function provSupports(): array
+    public static function provSupports(): array
     {
         return [
             // #0
-            'string'                     => [
+            'string' => [
                 'subject' => 'foo',
                 'expect'  => false,
             ],
 
             // #1
-            'array'                      => [
+            'array' => [
                 'subject' => [],
                 'expect'  => false,
             ],
 
-            'class'                      => [
+            'class' => [
                 'subject' => self::class,
                 'expect'  => false,
             ],
 
             // #2
-            'object'                     => [
-                'subject' => new class() {
-                },
+            'object' => [
+                'subject' => new class() {},
                 'expect'  => true,
             ],
 
@@ -83,12 +85,10 @@ final class ObjectPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-
     /**
-     * @dataProvider provSupports
-     *
      * @param mixed $subject
      */
+    #[DataProvider('provSupports')]
     public function testSupports($subject, bool $expect): void
     {
         $selector = new ObjectPropertySelector();
@@ -165,14 +165,12 @@ final class ObjectPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-
     /**
-     * @dataProvider provSelect
-     *
      * @param mixed $key
      * @param mixed $return
      * @param mixed $expect
      */
+    #[DataProvider('provSelect')]
     public function testSelect(object $object, $key, $return, $expect): void
     {
         $selector = new ObjectPropertySelector();
@@ -226,10 +224,18 @@ final class ObjectPropertySelectorTest extends TestCase
         };
         $selector = new ObjectPropertySelector();
 
-        $this->expectError();
-        $this->expectErrorMessage('static property');
+        // Because expectError() is removed in phpunit 10.
+        try {
+            set_error_handler(static function (int $severity, string $message): void {
+                throw new \ErrorException($message, $severity);
+            });
+            $this->expectException(\ErrorException::class);
+            $this->expectExceptionMessage('static property');
 
-        $selector->select($object, 'foo');
+            $selector->select($object, 'foo');
+        } finally {
+            restore_error_handler();
+        }
 
         // @codeCoverageIgnoreStart
     }
@@ -255,10 +261,7 @@ final class ObjectPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-
-    /**
-     * @dataProvider provSelectThrowsOnNonobject
-     */
+    #[DataProvider('provSelectThrowsOnNonobject')]
     public function testSelectThrowsOnNonobject(string $key, string $method): void
     {
         $selector = new ObjectPropertySelector();

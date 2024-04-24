@@ -3,25 +3,28 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
 
 namespace Tailors\PHPUnit\Values;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Constraint\Constraint;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\ConstraintTestCase
- * @covers \Tailors\PHPUnit\Values\ExampleConstraint
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
+ *
+ * @coversNothing
  */
+#[CoversClass(ConstraintTestCase::class)]
+#[CoversClass(ExampleConstraint::class)]
 final class ConstraintTestCaseTest extends ConstraintTestCase
 {
     public static function subject(): string
@@ -39,7 +42,7 @@ final class ConstraintTestCaseTest extends ConstraintTestCase
         return 'identical to';
     }
 
-    public function createConstraint(...$args): Constraint
+    public static function createConstraint(...$args): Constraint
     {
         return ExampleConstraint::create(...$args);
     }
@@ -94,9 +97,8 @@ final class ConstraintTestCaseTest extends ConstraintTestCase
 
     /**
      * @param mixed $actual
-     *
-     * @dataProvider provArrayValuesIdenticalTo
      */
+    #[DataProvider('provArrayValuesIdenticalTo')]
     public function testValuesMatchSucceeds(array $expect, $actual): void
     {
         $this->examineValuesMatchSucceeds($expect, $actual);
@@ -104,10 +106,9 @@ final class ConstraintTestCaseTest extends ConstraintTestCase
 
     /**
      * @param mixed $actual
-     *
-     * @dataProvider provArrayValuesEqualButNotIdenticalTo
-     * @dataProvider provArrayValuesNotEqualTo
      */
+    #[DataProvider('provArrayValuesEqualButNotIdenticalTo')]
+    #[DataProvider('provArrayValuesNotEqualTo')]
     public function testValuesMatchFails(array $expect, $actual): void
     {
         $this->examineValuesMatchFails($expect, $actual, 'array');
@@ -115,10 +116,9 @@ final class ConstraintTestCaseTest extends ConstraintTestCase
 
     /**
      * @param mixed $actual
-     *
-     * @dataProvider provArrayValuesEqualButNotIdenticalTo
-     * @dataProvider provArrayValuesNotEqualTo
      */
+    #[DataProvider('provArrayValuesEqualButNotIdenticalTo')]
+    #[DataProvider('provArrayValuesNotEqualTo')]
     public function testNotValuesMatchSucceeds(array $expect, $actual): void
     {
         $this->examineNotValuesMatchSucceeds($expect, $actual);
@@ -126,9 +126,8 @@ final class ConstraintTestCaseTest extends ConstraintTestCase
 
     /**
      * @param mixed $actual
-     *
-     * @dataProvider provArrayValuesIdenticalTo
      */
+    #[DataProvider('provArrayValuesIdenticalTo')]
     public function testNotValuesMatchFails(array $expect, $actual): void
     {
         $this->examineNotValuesMatchFails($expect, $actual, 'array');

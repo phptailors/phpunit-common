@@ -3,26 +3,30 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
 
 namespace Tailors\PHPUnit\Values;
 
+use ArrayObject;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\AbstractValueSelector
- * @covers \Tailors\PHPUnit\Values\ArrayValueSelector
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
+ *
+ * @coversNothing
  */
+#[CoversClass(AbstractValueSelector::class)]
+#[CoversClass(ArrayValueSelector::class)]
 final class ArrayValueSelectorTest extends TestCase
 {
     //
@@ -41,7 +45,7 @@ final class ArrayValueSelectorTest extends TestCase
     //
 
     // @codeCoverageIgnoreStart
-    public function provSupports(): array
+    public static function provSupports(): array
     {
         return [
             'ArrayValueSelectorTest.php:'.__LINE__ => [
@@ -65,8 +69,7 @@ final class ArrayValueSelectorTest extends TestCase
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
-                'subject' => new class() {
-                },
+                'subject' => new class() {},
                 'expect'  => false,
             ],
 
@@ -88,12 +91,10 @@ final class ArrayValueSelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-
     /**
-     * @dataProvider provSupports
-     *
      * @param mixed $subject
      */
+    #[DataProvider('provSupports')]
     public function testSupports($subject, bool $expect): void
     {
         $selector = new ArrayValueSelector();
@@ -127,13 +128,9 @@ final class ArrayValueSelectorTest extends TestCase
                 return $this->foo;
             }
 
-            public function offsetSet($offset, $value): void
-            {
-            }
+            public function offsetSet($offset, $value): void {}
 
-            public function offsetUnset($offset): void
-            {
-            }
+            public function offsetUnset($offset): void {}
         };
 
         return [
@@ -141,36 +138,36 @@ final class ArrayValueSelectorTest extends TestCase
                 'subject' => [
                     'foo' => 'FOO',
                 ],
-                'key'     => 'foo',
-                'return'  => true,
-                'expect'  => 'FOO',
+                'key'    => 'foo',
+                'return' => true,
+                'expect' => 'FOO',
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
                 'subject' => [
                     'foo' => 'FOO',
                 ],
-                'key'     => 'bar',
-                'return'  => false,
-                'expect'  => null,
+                'key'    => 'bar',
+                'return' => false,
+                'expect' => null,
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
                 'subject' => new \ArrayObject([
                     'foo' => 'FOO',
                 ]),
-                'key'     => 'foo',
-                'return'  => true,
-                'expect'  => 'FOO',
+                'key'    => 'foo',
+                'return' => true,
+                'expect' => 'FOO',
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
                 'subject' => new \ArrayObject([
                     'foo' => 'FOO',
                 ]),
-                'key'     => 'bar',
-                'return'  => false,
-                'expect'  => null,
+                'key'    => 'bar',
+                'return' => false,
+                'expect' => null,
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
@@ -190,17 +187,15 @@ final class ArrayValueSelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-
     /**
-     * @dataProvider provSelect
-     *
      * @param mixed $subject
      * @param mixed $key
      * @param mixed $return
      * @param mixed $expect
      *
-     * @psalm-param array|\ArrayObject $subject
+     * @psalm-param array|ArrayObject $subject
      */
+    #[DataProvider('provSelect')]
     public function testSelect($subject, $key, $return, $expect): void
     {
         $selector = new ArrayValueSelector();

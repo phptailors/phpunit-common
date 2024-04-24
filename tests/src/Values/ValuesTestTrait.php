@@ -3,12 +3,14 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
 
 namespace Tailors\PHPUnit\Values;
+
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @small
@@ -65,9 +67,7 @@ trait ValuesTestTrait
 
     // @codeCoverageIgnoreEnd
 
-    /**
-     * @dataProvider provValues
-     */
+    #[DataProvider('provValues')]
     public function testValues(array $args, array $expect): void
     {
         $class = self::getValuesClass();

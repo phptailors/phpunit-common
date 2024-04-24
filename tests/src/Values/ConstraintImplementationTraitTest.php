@@ -3,25 +3,27 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
 
 namespace Tailors\PHPUnit\Values;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\ConstraintImplementationTrait
- * @covers \Tailors\PHPUnit\Values\DummyConstraintImplementation
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
+ *
+ * @coversNothing
  */
+#[CoversClass(ConstraintImplementationTrait::class)]
+#[CoversClass(DummyConstraintImplementation::class)]
 final class ConstraintImplementationTraitTest extends TestCase
 {
     protected function setUp(): void
@@ -43,7 +45,7 @@ final class ConstraintImplementationTraitTest extends TestCase
         $this->assertSame([$expected, 1, 1], DummyConstraintImplementation::$validateExpectations);
 
         $this->assertSame(DummyConstraintImplementation::$makeComparator, $constraint->comparator);
-        $this->assertInstanceOf(Selection::class, $constraint->selection);
+        $this->assertInstanceOf(ExpectedValuesSelection::class, $constraint->selection);
         $this->assertInstanceOf(RecursiveUnwrapper::class, $constraint->unwrapper);
 
         $this->assertSame(DummyConstraintImplementation::$makeSelector, $constraint->selection->getSelector());
