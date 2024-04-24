@@ -3,7 +3,7 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
@@ -47,30 +47,29 @@ final class ObjectPropertySelectorTest extends TestCase
     //
 
     // @codeCoverageIgnoreStart
-    public function provSupports(): array
+    public static function provSupports(): array
     {
         return [
             // #0
-            'string'                     => [
+            'string' => [
                 'subject' => 'foo',
                 'expect'  => false,
             ],
 
             // #1
-            'array'                      => [
+            'array' => [
                 'subject' => [],
                 'expect'  => false,
             ],
 
-            'class'                      => [
+            'class' => [
                 'subject' => self::class,
                 'expect'  => false,
             ],
 
             // #2
-            'object'                     => [
-                'subject' => new class() {
-                },
+            'object' => [
+                'subject' => new class() {},
                 'expect'  => true,
             ],
 
@@ -226,10 +225,18 @@ final class ObjectPropertySelectorTest extends TestCase
         };
         $selector = new ObjectPropertySelector();
 
-        $this->expectError();
-        $this->expectErrorMessage('static property');
+        // Because expectError() is removed in phpunit 10.
+        try {
+            set_error_handler(static function (int $severity, string $message): void {
+                throw new \ErrorException($message, $severity);
+            });
+            $this->expectException(\ErrorException::class);
+            $this->expectExceptionMessage('static property');
 
-        $selector->select($object, 'foo');
+            $selector->select($object, 'foo');
+        } finally {
+            restore_error_handler();
+        }
 
         // @codeCoverageIgnoreStart
     }
