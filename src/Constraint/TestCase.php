@@ -16,7 +16,6 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\ReflectionException;
 use PHPUnit\Framework\MockObject\RuntimeException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Tailors\PHPUnit\CircularDependencyException;
 
 /**
@@ -49,7 +48,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @throws Exception
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      */
     final public function examineCreateConstraint(array $args): Constraint
     {
@@ -71,7 +69,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @throws ExpectationFailedException
      * @throws ReflectionException
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      */
     final public function examineConstraintUnaryOperatorFailure(array $args, $actual, string $message): void
     {
@@ -94,7 +91,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param mixed $actual actual value
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      */
     final public function examineConstraintMatchSucceeds(array $args, $actual): void
     {
@@ -109,7 +105,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @throws ExpectationFailedException
      * @throws CircularDependencyException
-     * @throws InvalidArgumentException
      */
     final public function examineConstraintMatchFails(array $args, $actual, string $message): void
     {
@@ -129,7 +124,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param mixed $actual
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      */
     final public function examineNotConstraintMatchSucceeds(array $args, $actual): void
     {
@@ -143,7 +137,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param string $message
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      */
     final public function examineNotConstraintMatchFails(array $args, $actual, string $message): void
     {
@@ -171,16 +164,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         int $precedence = 1
     ): UnaryOperator {
         return new class($constraint, $operator, $precedence) extends UnaryOperator {
-            /** @var string */
-            private $operator;
-
-            /** @var int */
-            private $precedence;
-
-            public function __construct(Constraint $constraint, string $operator, int $precedence)
+            public function __construct(Constraint $constraint, private string $operator, private int $precedence)
             {
-                $this->operator = $operator;
-                $this->precedence = $precedence;
                 parent::__construct($constraint);
             }
 

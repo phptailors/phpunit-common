@@ -15,7 +15,6 @@ use PHPUnit\Framework\Constraint\LogicalNot;
 use PHPUnit\Framework\Constraint\Operator;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Comparator\ComparisonFailure;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Tailors\PHPUnit\CircularDependencyException;
 use Tailors\PHPUnit\Common\Exporter;
 use Tailors\PHPUnit\Common\ShortFailureDescriptionTrait;
@@ -102,7 +101,6 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
      * @param bool   $returnResult
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      * @throws CircularDependencyException
      */
     final public function evaluate($other, string $description = '', bool $returnResult = false): ?bool

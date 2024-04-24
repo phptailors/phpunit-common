@@ -10,17 +10,20 @@
 
 namespace Tailors\PHPUnit\Values;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\RecursiveSelector
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
+ *
+ * @coversNothing
  */
+#[CoversClass(RecursiveSelector::class)]
 final class RecursiveSelectorTest extends TestCase
 {
     public const UNIQUE_TAG = RecursiveUnwrapper::UNIQUE_TAG;
@@ -61,7 +64,7 @@ final class RecursiveSelectorTest extends TestCase
     {
         return [
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) { return self::createSelection([]); },
+                'selection' => fn (TestCase $test) => self::createSelection([]),
                 'subject'   => [],
                 'expect'    => [
                     self::UNIQUE_TAG => true,
@@ -69,11 +72,9 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                 ],
@@ -84,14 +85,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => [
-                            'baz' => 'e:BAZ',
-                        ],
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => [
+                        'baz' => 'e:BAZ',
+                    ],
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => [
@@ -108,14 +107,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => [
-                            'baz' => 'e:BAZ',
-                        ],
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => [
+                        'baz' => 'e:BAZ',
+                    ],
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => 'a:BAR',
@@ -128,14 +125,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelection([
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelection([
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => [
@@ -154,14 +149,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelectionAggregate($test, [
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelectionAggregate($test, [
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => [
@@ -180,14 +173,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelection([
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelection([
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => new \ArrayObject([
@@ -206,14 +197,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelectionAggregate($test, [
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelectionAggregate($test, [
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => new \ArrayObject([
@@ -232,14 +221,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelection([
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelection([
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => 'a:BAR',
@@ -252,14 +239,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelectionAggregate($test, [
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelectionAggregate($test, [
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => 'a:BAR',
@@ -272,14 +257,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelection([
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelection([
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => 'a:BAR',
@@ -292,14 +275,12 @@ final class RecursiveSelectorTest extends TestCase
             ],
 
             'RecursiveSelectorTest.php:'.__LINE__ => [
-                'selection' => function (TestCase $test) {
-                    return self::createSelection([
-                        'foo' => 'e:FOO',
-                        'bar' => self::createSelectionAggregate($test, [
-                            'baz' => 'e:BAZ',
-                        ]),
-                    ]);
-                },
+                'selection' => fn (TestCase $test) => self::createSelection([
+                    'foo' => 'e:FOO',
+                    'bar' => self::createSelectionAggregate($test, [
+                        'baz' => 'e:BAZ',
+                    ]),
+                ]),
                 'subject' => [
                     'foo' => 'a:FOO',
                     'bar' => 'a:BAR',
@@ -314,11 +295,10 @@ final class RecursiveSelectorTest extends TestCase
     }
 
     /**
-     * @dataProvider provSelectProperties
-     *
      * @param \Closure(TestCase):ExpectedValuesSelection $selection
      * @param mixed                                      $subject
      */
+    #[DataProvider('provSelectProperties')]
     public function testSelectProperties(\Closure $selection, $subject, array $expect): void
     {
         $selector = new RecursiveSelector($selection($this));

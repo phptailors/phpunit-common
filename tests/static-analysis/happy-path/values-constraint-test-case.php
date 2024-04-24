@@ -15,8 +15,8 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\ReflectionException;
 use PHPUnit\Framework\MockObject\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Tailors\PHPUnit\CircularDependencyException;
+use Tailors\PHPUnit\InvalidArgumentException;
 use Tailors\PHPUnit\Values\ConstraintTestCase;
 
 /**
@@ -24,13 +24,14 @@ use Tailors\PHPUnit\Values\ConstraintTestCase;
  * @throws ExpectationFailedException
  * @throws ReflectionException
  * @throws RuntimeException
- * @throws InvalidArgumentException
  * @throws CircularDependencyException
- * @throws \Tailors\PHPUnit\InvalidArgumentException
+ * @throws InvalidArgumentException
  */
 function consume(ConstraintTestCase $test): ConstraintTestCase
 {
-    $test->provCreateConstraint();
+    if ([] === $test->provCreateConstraint()) {
+        return $test;
+    }
     $test->testCreateConstraint([], ['values' => TestCase::identicalTo([])]);
 
     $test->testConstraintUnaryOperatorFailure();

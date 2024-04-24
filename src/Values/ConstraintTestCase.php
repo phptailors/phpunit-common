@@ -10,12 +10,12 @@
 
 namespace Tailors\PHPUnit\Values;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\ReflectionException;
 use PHPUnit\Framework\MockObject\RuntimeException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Tailors\PHPUnit\CircularDependencyException;
 use Tailors\PHPUnit\Constraint\TestCase;
 
@@ -54,14 +54,12 @@ abstract class ConstraintTestCase extends TestCase
     // @codeCoverageIgnoreEnd
 
     /**
-     * @dataProvider provCreateConstraint
-     *
      * @throws Exception
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      *
      * @psalm-param array{values:\PHPUnit\Framework\Constraint\Constraint} $expect
      */
+    #[DataProvider('provCreateConstraint')]
     final public function testCreateConstraint(array $args, array $expect): void
     {
         $constraint = $this->examineCreateConstraint($args);
@@ -73,7 +71,6 @@ abstract class ConstraintTestCase extends TestCase
      * @throws ExpectationFailedException
      * @throws ReflectionException
      * @throws RuntimeException
-     * @throws InvalidArgumentException
      */
     final public function testConstraintUnaryOperatorFailure(): void
     {
@@ -89,7 +86,6 @@ abstract class ConstraintTestCase extends TestCase
      * @param mixed $actual
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      */
     final public function examineValuesMatchSucceeds(array $expect, $actual): void
     {
@@ -102,7 +98,6 @@ abstract class ConstraintTestCase extends TestCase
      * @param string $string
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      * @throws CircularDependencyException
      */
     final public function examineValuesMatchFails(array $expect, $actual, string $string): void
@@ -119,7 +114,6 @@ abstract class ConstraintTestCase extends TestCase
      * @param mixed $actual
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      */
     final public function examineNotValuesMatchSucceeds(array $expect, $actual): void
     {
@@ -132,7 +126,6 @@ abstract class ConstraintTestCase extends TestCase
      * @param string $string
      *
      * @throws ExpectationFailedException
-     * @throws InvalidArgumentException
      */
     final public function examineNotValuesMatchFails(array $expect, $actual, string $string): void
     {

@@ -10,17 +10,20 @@
 
 namespace Tailors\PHPUnit\Values;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\ExpectedValuesSelection
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
+ *
+ * @coversNothing
  */
+#[CoversClass(ExpectedValuesSelection::class)]
 final class ExpectedValuesSelectionTest extends TestCase
 {
     //
@@ -47,23 +50,21 @@ final class ExpectedValuesSelectionTest extends TestCase
 
         return [
             'ExpectedValuesSelectionTest.php:'.__LINE__ => [
-                'args'   => function (ValueSelectorInterface $selector) { return [$selector]; },
+                'args'   => fn (ValueSelectorInterface $selector) => [$selector],
                 'expect' => [
                     'array' => [],
                 ],
             ],
 
             'ExpectedValuesSelectionTest.php:'.__LINE__ => [
-                'args'   => function (ValueSelectorInterface $selector) { return [$selector, ['foo', 'bar']]; },
+                'args'   => fn (ValueSelectorInterface $selector) => [$selector, ['foo', 'bar']],
                 'expect' => [
                     'array' => ['foo', 'bar'],
                 ],
             ],
 
             'ExpectedValuesSelectionTest.php:'.__LINE__ => [
-                'args' => function (ValueSelectorInterface $selector) use ($arrayObject) {
-                    return [$selector, $arrayObject];
-                },
+                'args'   => fn (ValueSelectorInterface $selector) => [$selector, $arrayObject],
                 'expect' => [
                     'array' => ['foo', 'bar'],
                 ],
@@ -72,10 +73,9 @@ final class ExpectedValuesSelectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provConstruct
-     *
      * @param \Closure(ValueSelectorInterface):array $args
      */
+    #[DataProvider('provConstruct')]
     public function testConstruct(\Closure $args, array $expect): void
     {
         $selector = $this->createMock(ValueSelectorInterface::class);
