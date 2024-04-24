@@ -3,7 +3,7 @@
 /*
  * This file is part of phptailors/phpunit-extensions.
  *
- * Copyright (c) Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+ * Copyright (c) Paweł Tomulik <pawel@tomulik.pl>
  *
  * View the LICENSE file for full copyright and license information.
  */
@@ -41,7 +41,7 @@ final class ArrayValueSelectorTest extends TestCase
     //
 
     // @codeCoverageIgnoreStart
-    public function provSupports(): array
+    public static function provSupports(): array
     {
         return [
             'ArrayValueSelectorTest.php:'.__LINE__ => [
@@ -65,8 +65,7 @@ final class ArrayValueSelectorTest extends TestCase
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
-                'subject' => new class() {
-                },
+                'subject' => new class() {},
                 'expect'  => false,
             ],
 
@@ -127,13 +126,9 @@ final class ArrayValueSelectorTest extends TestCase
                 return $this->foo;
             }
 
-            public function offsetSet($offset, $value): void
-            {
-            }
+            public function offsetSet($offset, $value): void {}
 
-            public function offsetUnset($offset): void
-            {
-            }
+            public function offsetUnset($offset): void {}
         };
 
         return [
@@ -141,36 +136,36 @@ final class ArrayValueSelectorTest extends TestCase
                 'subject' => [
                     'foo' => 'FOO',
                 ],
-                'key'     => 'foo',
-                'return'  => true,
-                'expect'  => 'FOO',
+                'key'    => 'foo',
+                'return' => true,
+                'expect' => 'FOO',
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
                 'subject' => [
                     'foo' => 'FOO',
                 ],
-                'key'     => 'bar',
-                'return'  => false,
-                'expect'  => null,
+                'key'    => 'bar',
+                'return' => false,
+                'expect' => null,
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
                 'subject' => new \ArrayObject([
                     'foo' => 'FOO',
                 ]),
-                'key'     => 'foo',
-                'return'  => true,
-                'expect'  => 'FOO',
+                'key'    => 'foo',
+                'return' => true,
+                'expect' => 'FOO',
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
                 'subject' => new \ArrayObject([
                     'foo' => 'FOO',
                 ]),
-                'key'     => 'bar',
-                'return'  => false,
-                'expect'  => null,
+                'key'    => 'bar',
+                'return' => false,
+                'expect' => null,
             ],
 
             'ArrayValueSelectorTest.php:'.__LINE__ => [
