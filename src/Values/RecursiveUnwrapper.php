@@ -50,6 +50,7 @@ final class RecursiveUnwrapper implements RecursiveUnwrapperInterface
      *
      * @throws CircularDependencyException
      */
+    #[\Override]
     public function unwrap(ValuesInterface $values): array
     {
         $this->seen = new \SplObjectStorage();
