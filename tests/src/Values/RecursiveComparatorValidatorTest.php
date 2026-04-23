@@ -12,6 +12,7 @@ namespace Tailors\PHPUnit\Values;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\Comparator\ComparatorInterface;
 use Tailors\PHPUnit\Comparator\DummyComparatorWrapper;
@@ -20,15 +21,12 @@ use Tailors\PHPUnit\Comparator\IdentityComparator;
 use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
- * @small
- *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
- *
- * @coversNothing
  */
 #[CoversClass(RecursiveComparatorValidator::class)]
+#[Small]
 final class RecursiveComparatorValidatorTest extends TestCase
 {
     public static function makeFailureMessage(
@@ -106,7 +104,7 @@ final class RecursiveComparatorValidatorTest extends TestCase
                 ],
                 'expect' => [
                     'exception' => InvalidArgumentException::class,
-                    'message'   => self::makeFailureMessage(123, __CLASS__.'::testValidate', 'EqualityComparator', 1),
+                    'message'   => self::makeFailureMessage(123, self::class.'::testValidate', 'EqualityComparator', 1),
                 ],
             ],
 
@@ -120,7 +118,7 @@ final class RecursiveComparatorValidatorTest extends TestCase
                 ],
                 'expect' => [
                     'exception' => InvalidArgumentException::class,
-                    'message'   => self::makeFailureMessage(123, __CLASS__.'::testValidate', 'IdentityComparator', 1),
+                    'message'   => self::makeFailureMessage(123, self::class.'::testValidate', 'IdentityComparator', 1),
                 ],
             ],
 
@@ -139,7 +137,7 @@ final class RecursiveComparatorValidatorTest extends TestCase
                 ],
                 'expect' => [
                     'exception' => InvalidArgumentException::class,
-                    'message'   => self::makeFailureMessage(11, __CLASS__.'::testValidate', 'EqualityComparator', 2),
+                    'message'   => self::makeFailureMessage(11, self::class.'::testValidate', 'EqualityComparator', 2),
                 ],
             ],
 
@@ -159,7 +157,7 @@ final class RecursiveComparatorValidatorTest extends TestCase
                 ],
                 'expect' => [
                     'exception' => InvalidArgumentException::class,
-                    'message'   => self::makeFailureMessage(123, __CLASS__.'::testValidate', 'EqualityComparator', 2),
+                    'message'   => self::makeFailureMessage(123, self::class.'::testValidate', 'EqualityComparator', 2),
                 ],
             ],
 
@@ -174,7 +172,7 @@ final class RecursiveComparatorValidatorTest extends TestCase
                 ],
                 'expect' => [
                     'exception' => InvalidArgumentException::class,
-                    'message'   => self::makeFailureMessage(123, __CLASS__.'::testValidate', 'EqualityComparator', 2),
+                    'message'   => self::makeFailureMessage(123, self::class.'::testValidate', 'EqualityComparator', 2),
                 ],
             ],
         ];
