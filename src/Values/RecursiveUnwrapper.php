@@ -22,21 +22,13 @@ final class RecursiveUnwrapper implements RecursiveUnwrapperInterface
     public const UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
 
     /**
-     * @var bool
-     */
-    private $tagging;
-
-    /**
      * Initializes the object.
      *
      * @param bool $tagging
      *                      If true, then a unique tag will be appended to the end of every
      *                      array that results from unwrapping of array of properties
      */
-    public function __construct(bool $tagging = true)
-    {
-        $this->tagging = $tagging;
-    }
+    public function __construct(private readonly bool $tagging = true) {}
 
     /**
      * Walk recursively through $values and unwrap nested instances of
