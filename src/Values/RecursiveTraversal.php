@@ -133,7 +133,7 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
      */
     private function visitValue(&$value, RecursiveVisitorInterface $visitor): void
     {
-        if (!$this->noWalkNestedArrays &&  is_array($value)) {
+        if (!$this->noWalkNestedArrays && is_array($value)) {
             $this->walkRecursive($value, $visitor);
 
             return;
