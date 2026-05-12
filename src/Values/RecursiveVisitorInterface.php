@@ -21,7 +21,6 @@ interface RecursiveVisitorInterface
 {
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -29,7 +28,6 @@ interface RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -37,7 +35,6 @@ interface RecursiveVisitorInterface
 
     /**
      * @param mixed $node
-     * @param array $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -45,7 +42,6 @@ interface RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -54,7 +50,6 @@ interface RecursiveVisitorInterface
     /**
      * @param array|ValuesInterface $node
      * @param mixed                 $key
-     * @param array                 $stack
      *
      * @psalm-param array-key       $key
      * @psalm-param list<StackItem> $stack
@@ -64,9 +59,6 @@ interface RecursiveVisitorInterface
     public function makeStackItem($node, $key, array $stack): RecursiveVisitorStackItemInterface;
 
     /**
-     * @param RecursiveVisitorStackItemInterface $item
-     * @param array                              $stack
-     *
      * @psalm-param StackItem       $item
      * @psalm-param list<StackItem> $stack
      */

@@ -49,7 +49,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -66,7 +65,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -77,7 +75,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -88,7 +85,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -106,7 +102,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
     /**
      * @param array|ValuesInterface $node
      * @param mixed                 $key
-     * @param array                 $stack
      *
      * @psalm-param array-key       $key
      * @psalm-param list<StackItem> $stack
@@ -119,9 +114,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
     }
 
     /**
-     * @param RecursiveVisitorStackItemInterface $item
-     * @param array                              $stack
-     *
      * @psalm-param StackItem       $item
      * @psalm-param list<StackItem> $stack
      */
@@ -138,8 +130,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
     }
 
     /**
-     * @param array $stack
-     *
      * @psalm-param list<StackItem> $stack
      *
      * @psalm-pure

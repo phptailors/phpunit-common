@@ -58,7 +58,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -88,7 +87,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -109,7 +107,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
 
     /**
      * @param mixed $node
-     * @param array $stack
      *
      * @psalm-param list<StackItem> $stack
      */
@@ -120,7 +117,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
 
     /**
      * @param array|ValuesInterface $node
-     * @param array                 $stack
      *
      * @return never
      *
@@ -136,7 +132,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     /**
      * @param array|ValuesInterface $node
      * @param mixed                 $key
-     * @param array                 $stack
      *
      * @psalm-param array-key       $key
      * @psalm-param list<StackItem> $stack
@@ -149,9 +144,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
-     * @param RecursiveVisitorStackItemInterface $item
-     * @param array                              $stack
-     *
      * @psalm-param StackItem       $item
      * @psalm-param list<StackItem> $stack
      */
@@ -161,7 +153,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
-     * @param array $stack
      * @param mixed $value
      *
      * @psalm-param list<StackItem> $stack
@@ -188,8 +179,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
-     * @param array $stack
-     *
      * @return never
      *
      * @throws CircularDependencyException
@@ -204,8 +193,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
-     * @param array $stack
-     *
      * @psalm-param list<StackItem> $stack
      *
      * @psalm-mutation-free
