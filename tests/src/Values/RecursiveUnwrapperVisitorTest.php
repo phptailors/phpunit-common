@@ -21,7 +21,7 @@ use Tailors\PHPUnit\CircularDependencyException;
  *
  * @psalm-internal Tailors\PHPUnit
  *
- * @psalm-type StackItem = RecursiveUnwrapperStackItem
+ * @psalm-type StackItem     = RecursiveUnwrapperStackItem
  * @psalm-type EnterTestCall = array{args: array{node: array|ValuesInterface}, return: mixed, next?: array-key}
  * @psalm-type VisitTestCall = array{args: array{node: mixed}, key?: array-key}
  */
@@ -78,7 +78,9 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     }
 
     /**
-     * @param list<StackItem> $stack
+     * @param array $stack
+     *
+     * @psalm-param list<StackItem> $stack
      */
     #[DataProvider('provCycle')]
     public function testCycle(array $stack, string $expect): void
@@ -282,8 +284,8 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     }
 
     /**
-     * @param array       $ctor
-     * @param list<array> $calls
+     * @param array $ctor
+     * @param array $calls
      *
      * @psalm-param non-empty-list<EnterTestCall> $calls
      */
