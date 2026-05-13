@@ -92,6 +92,7 @@ trait ValuesTestTrait
         $this->assertSame(AbstractValues::abstractValuesTag(), ExpectedValues::abstractValuesTag());
     }
 
+    // @codeCoverageIgnoreStart
     public static function provTag(): iterable
     {
         $defaultTag = ActualValues::abstractValuesTag();
@@ -114,6 +115,7 @@ trait ValuesTestTrait
             'expect' => 'TAGFOO',
         ];
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * @dataProvider provTag
