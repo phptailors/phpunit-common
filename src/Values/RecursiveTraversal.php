@@ -21,20 +21,43 @@ use Tailors\PHPUnit\Common\ReferenceStorage;
  */
 final class RecursiveTraversal implements RecursiveTraversalInterface
 {
-    private ReferenceStorage $seen;
+    /**
+     * @var ReferenceStorage
+     */
+    private $seen;
 
     /**
+     * @var array
+     *
      * @psalm-var list<VisitorStackItem>
      */
-    private array $stack;
+    private $stack;
+
+    /**
+     * @var bool
+     */
+    private $noUnwrapValuesWrappers;
+
+    /**
+     * @var bool
+     */
+    private $noWalkNestedValuesInterface;
+
+    /**
+     * @var bool
+     */
+    private $noWalkNestedArrays;
 
     /**
      * Initializes the object.
      */
-    public function __construct(private readonly bool $noUnwrapValuesWrappers = false, private readonly bool $noWalkNestedValuesInterface = false, private readonly bool $noWalkNestedArrays = false)
+    public function __construct(bool $noUnwrapValuesWrappers = false, bool $noWalkNestedValuesInterface = false, bool $noWalkNestedArrays = false)
     {
         $this->seen = new ReferenceStorage();
         $this->stack = [];
+        $this->noUnwrapValuesWrappers = $noUnwrapValuesWrappers;
+        $this->noWalkNestedValuesInterface = $noWalkNestedValuesInterface;
+        $this->noWalkNestedArrays = $noWalkNestedArrays;
     }
 
     /**
@@ -45,7 +68,6 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
      *
      * @psalm-param RecursiveVisitorInterface<StackItem> $visitor
      */
-    #[\Override]
     public function walk(ValuesInterface $values, RecursiveVisitorInterface $visitor): void
     {
         $this->seen = new ReferenceStorage();
@@ -61,6 +83,8 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
     }
 
     /**
+     * @param array|ValuesInterface $node
+     *
      * @psalm-template T of array|ValuesInterface
      * @psalm-template StackItem of RecursiveVisitorStackItemInterface
      *
@@ -71,7 +95,7 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
      *
      * @psalm-if-this-is self<StackItem>
      */
-    private function walkRecursive(array|ValuesInterface &$node, RecursiveVisitorInterface $visitor): void
+    private function walkRecursive(&$node, RecursiveVisitorInterface $visitor): void
     {
         if ($this->seen->contains($node)) {
             if (!$visitor->cycle($node, $this->stack)) {
@@ -95,13 +119,15 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
     }
 
     /**
+     * @param array|ValuesInterface $node
+     *
      * @psalm-template StackItem of RecursiveVisitorStackItemInterface
      *
      * @psalm-param RecursiveVisitorInterface<StackItem> $visitor
      *
      * @psalm-if-this-is self<StackItem>
      */
-    private function iterate(array|ValuesInterface $node, RecursiveVisitorInterface $visitor): void
+    private function iterate($node, RecursiveVisitorInterface $visitor): void
     {
         /** @var mixed $value */
         foreach ($node as $key => &$value) {
@@ -118,6 +144,8 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
     }
 
     /**
+     * @param mixed $value
+     *
      * @psalm-template T
      * @psalm-template StackItem of RecursiveVisitorStackItemInterface
      *
@@ -128,7 +156,7 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
      *
      * @psalm-if-this-is self<StackItem>
      */
-    private function visitValue(mixed &$value, RecursiveVisitorInterface $visitor): void
+    private function visitValue(&$value, RecursiveVisitorInterface $visitor): void
     {
         if (!$this->noWalkNestedArrays && is_array($value)) {
             $this->walkRecursive($value, $visitor);

@@ -25,20 +25,22 @@ abstract class AbstractPropertySelector extends AbstractValueSelector
      * A name for the values being selected from subject (in plural,
      * e.g. "values" or "properties").
      */
-    #[\Override]
     public function selectable(): string
     {
         return 'properties';
     }
 
     /**
+     * @param mixed $subject
+     * @param mixed $key
+     * @param mixed $retval
+     *
      * @psalm-param SubjectType $subject
      * @psalm-param array-key   $key
      */
-    #[\Override]
-    final protected function selectFromSupported(mixed $subject, mixed $key, mixed &$retval = null): bool
+    final protected function selectFromSupported($subject, $key, &$retval = null): bool
     {
-        $method = (str_ends_with((string) $key, '()')) ? substr((string) $key, 0, -2) : null;
+        $method = ('()' === substr((string) $key, -2)) ? substr((string) $key, 0, -2) : null;
         if (null !== $method) {
             return $this->selectWithMethod($subject, $method, $retval);
         }
@@ -47,17 +49,25 @@ abstract class AbstractPropertySelector extends AbstractValueSelector
     }
 
     /**
+     * @param mixed $subject
+     * @param mixed $key
+     *
+     * @return mixed
+     *
      * @psalm-param SubjectType $subject
      * @psalm-param array-key   $key
      */
-    abstract protected function getSubjectAttribute(mixed $subject, mixed $key): mixed;
+    abstract protected function getSubjectAttribute($subject, $key);
 
     /**
+     * @param mixed $subject
+     * @param mixed $retval
+     *
      * @param-out mixed $retval
      *
      * @psalm-param object|class-string $subject
      */
-    final protected function selectWithMethod(mixed $subject, string $method, mixed &$retval = null): bool
+    final protected function selectWithMethod($subject, string $method, &$retval = null): bool
     {
         if (!method_exists($subject, $method)) {
             return false;
@@ -70,12 +80,16 @@ abstract class AbstractPropertySelector extends AbstractValueSelector
     }
 
     /**
+     * @param mixed $subject
+     * @param mixed $key
+     * @param mixed $retval
+     *
      * @param-out mixed $retval
      *
      * @psalm-param SubjectType $subject
      * @psalm-param array-key   $key
      */
-    final protected function selectWithAttribute(mixed $subject, mixed $key, mixed &$retval = null): bool
+    final protected function selectWithAttribute($subject, $key, &$retval = null): bool
     {
         $key = (string) $key;
         if (!property_exists($subject, $key)) {

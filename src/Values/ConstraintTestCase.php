@@ -10,11 +10,12 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\ReflectionException;
 use PHPUnit\Framework\MockObject\RuntimeException;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Tailors\PHPUnit\CircularDependencyException;
 use Tailors\PHPUnit\Constraint\TestCase;
 
@@ -52,12 +53,14 @@ abstract class ConstraintTestCase extends TestCase
 
     // @codeCoverageIgnoreEnd
     /**
+     * @dataProvider provCreateConstraint
+     *
      * @throws Exception
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      *
      * @psalm-param array{values: Constraint} $expect
      */
-    #[DataProvider('provCreateConstraint')]
     final public function testCreateConstraint(array $args, array $expect): void
     {
         $constraint = $this->examineCreateConstraint($args);
@@ -67,7 +70,9 @@ abstract class ConstraintTestCase extends TestCase
     /**
      * @throws Exception
      * @throws ExpectationFailedException
+     * @throws ReflectionException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     final public function testConstraintUnaryOperatorFailure(): void
     {
@@ -78,18 +83,24 @@ abstract class ConstraintTestCase extends TestCase
 
     // @codeCoverageIgnoreEnd
     /**
+     * @param mixed $actual
+     *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
-    final public function examineValuesMatchSucceeds(array $expect, mixed $actual): void
+    final public function examineValuesMatchSucceeds(array $expect, $actual): void
     {
         $this->examineConstraintMatchSucceeds([$expect], $actual);
     }
 
     /**
+     * @param mixed $actual
+     *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      * @throws CircularDependencyException
      */
-    final public function examineValuesMatchFails(array $expect, mixed $actual, string $string): void
+    final public function examineValuesMatchFails(array $expect, $actual, string $string): void
     {
         $this->examineConstraintMatchFails([$expect], $actual, self::message($string));
 
@@ -98,17 +109,23 @@ abstract class ConstraintTestCase extends TestCase
 
     // @codeCoverageIgnoreEnd
     /**
+     * @param mixed $actual
+     *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
-    final public function examineNotValuesMatchSucceeds(array $expect, mixed $actual): void
+    final public function examineNotValuesMatchSucceeds(array $expect, $actual): void
     {
         $this->examineNotConstraintMatchSucceeds([$expect], $actual);
     }
 
     /**
+     * @param mixed $actual
+     *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
-    final public function examineNotValuesMatchFails(array $expect, mixed $actual, string $string): void
+    final public function examineNotValuesMatchFails(array $expect, $actual, string $string): void
     {
         $this->examineNotConstraintMatchFails([$expect], $actual, self::message($string, true));
 

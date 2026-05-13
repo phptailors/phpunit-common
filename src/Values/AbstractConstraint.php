@@ -15,6 +15,7 @@ use PHPUnit\Framework\Constraint\LogicalNot;
 use PHPUnit\Framework\Constraint\Operator;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Comparator\ComparisonFailure;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Tailors\PHPUnit\Common\Exporter;
 use Tailors\PHPUnit\Common\ShortFailureDescriptionTrait;
 use Tailors\PHPUnit\Comparator\ComparatorInterface;
@@ -31,12 +32,41 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
 {
     use ShortFailureDescriptionTrait;
 
-    final protected function __construct(private ValuesInterface $expected, private ComparatorInterface $comparator, private ValueSelectorInterface $valueSelector, private RecursiveUnwrapperInterface $unwrapper) {}
+    /**
+     * @var ValuesInterface
+     */
+    private $expected;
+
+    /**
+     * @var ComparatorInterface
+     */
+    private $comparator;
+
+    /**
+     * @var ValueSelectorInterface
+     */
+    private $valueSelector;
+
+    /**
+     * @var RecursiveUnwrapperInterface
+     */
+    private $unwrapper;
+
+    final protected function __construct(
+        ValuesInterface $expected,
+        ComparatorInterface $comparator,
+        ValueSelectorInterface $valueSelector,
+        RecursiveUnwrapperInterface $unwrapper
+    ) {
+        $this->expected = $expected;
+        $this->comparator = $comparator;
+        $this->valueSelector = $valueSelector;
+        $this->unwrapper = $unwrapper;
+    }
 
     /**
      * Returns an instance of ValuesInterface which defines expected values.
      */
-    #[\Override]
     final public function getValues(): ValuesInterface
     {
         return $this->expected;
@@ -45,7 +75,6 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
     /**
      * Returns an instance of ComparatorInterface which implements comparison operator.
      */
-    #[\Override]
     final public function getComparator(): ComparatorInterface
     {
         return $this->comparator;
@@ -62,7 +91,6 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
     /**
      * Returns a string representation of the constraint.
      */
-    #[\Override]
     final public function toString(): string
     {
         return sprintf(
@@ -83,10 +111,12 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
      * a boolean value instead: true in case of success, false in case of a
      * failure.
      *
+     * @param mixed $other
+     *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
-    #[\Override]
-    final public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool
+    final public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
     {
         $success = $this->matches($other);
 
@@ -128,7 +158,6 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
      * @param Operator $operator the $operator of the expression
      * @param mixed    $role     role of $this constraint in the $operator expression
      */
-    #[\Override]
     final protected function toStringInContext(Operator $operator, $role): string
     {
         if ($operator instanceof LogicalNot) {
@@ -149,7 +178,6 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
      *
      * @param mixed $other value or object to evaluate
      */
-    #[\Override]
     final protected function matches($other): bool
     {
         if (!$this->valueSelector->supports($other)) {
@@ -161,7 +189,10 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
         return $this->comparator->compare($expect, $actual);
     }
 
-    private function select(mixed $subject): ValuesInterface
+    /**
+     * @param mixed $subject
+     */
+    private function select($subject): ValuesInterface
     {
         $array = $this->selectArray($subject);
 
@@ -172,7 +203,10 @@ abstract class AbstractConstraint extends Constraint implements ComparatorWrappe
         return new ActualValues($array);
     }
 
-    private function selectArray(mixed $subject): array
+    /**
+     * @param mixed $subject
+     */
+    private function selectArray($subject): array
     {
         $array = [];
 

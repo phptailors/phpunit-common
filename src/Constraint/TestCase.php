@@ -14,7 +14,9 @@ use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\UnaryOperator;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\ReflectionException;
 use PHPUnit\Framework\MockObject\RuntimeException;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use Tailors\PHPUnit\CircularDependencyException;
 
 /**
@@ -26,7 +28,10 @@ use Tailors\PHPUnit\CircularDependencyException;
  */
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    abstract public static function createConstraint(mixed ...$args): Constraint;
+    /**
+     * @param mixed $args
+     */
+    abstract public static function createConstraint(...$args): Constraint;
 
     /**
      * Returns constraint's class name.
@@ -42,12 +47,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @throws Exception
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      *
      * @psalm-return ConstraintClass
      */
     final public function examineCreateConstraint(array $args): Constraint
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
         $this->assertInstanceOf(static::getConstraintClass(), $constraint);
 
         return $constraint;
@@ -63,11 +69,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @throws Exception
      * @throws ExpectationFailedException
+     * @throws ReflectionException
      * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
-    final public function examineConstraintUnaryOperatorFailure(array $args, mixed $actual, string $message): void
+    final public function examineConstraintUnaryOperatorFailure(array $args, $actual, string $message): void
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
 
         $unary = $this->wrapWithUnaryOperator($constraint);
 
@@ -86,22 +94,25 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param mixed $actual actual value
      *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
-    final public function examineConstraintMatchSucceeds(array $args, mixed $actual): void
+    final public function examineConstraintMatchSucceeds(array $args, $actual): void
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
         self::assertThat($actual, $constraint);
     }
 
     /**
-     * @param array $args arguments passed to createConstraint()
+     * @param array $args   arguments passed to createConstraint()
+     * @param mixed $actual
      *
      * @throws ExpectationFailedException
      * @throws CircularDependencyException
+     * @throws InvalidArgumentException
      */
-    final public function examineConstraintMatchFails(array $args, mixed $actual, string $message): void
+    final public function examineConstraintMatchFails(array $args, $actual, string $message): void
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
 
         $this->expectException(ExpectationFailedException::class);
         $this->expectExceptionMessage($message);
@@ -111,25 +122,30 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     // @codeCoverageIgnoreEnd
+
     /**
-     * @param array $args arguments passed to createConstraint()
+     * @param array $args   arguments passed to createConstraint()
+     * @param mixed $actual
      *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
-    final public function examineNotConstraintMatchSucceeds(array $args, mixed $actual): void
+    final public function examineNotConstraintMatchSucceeds(array $args, $actual): void
     {
-        $constraint = self::logicalNot(static::createConstraint(...$args));
+        $constraint = self::logicalNot($this->createConstraint(...$args));
         self::assertThat($actual, $constraint);
     }
 
     /**
-     * @param array $args arguments passed to createConstraint()
+     * @param array $args   arguments passed to createConstraint()
+     * @param mixed $actual
      *
      * @throws ExpectationFailedException
+     * @throws InvalidArgumentException
      */
-    final public function examineNotConstraintMatchFails(array $args, mixed $actual, string $message): void
+    final public function examineNotConstraintMatchFails(array $args, $actual, string $message): void
     {
-        $constraint = self::logicalNot(static::createConstraint(...$args));
+        $constraint = self::logicalNot($this->createConstraint(...$args));
 
         $this->expectException(ExpectationFailedException::class);
         $this->expectExceptionMessage($message);
@@ -145,6 +161,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @throws Exception
      * @throws RuntimeException
+     * @throws ReflectionException
      */
     final protected function wrapWithUnaryOperator(
         Constraint $constraint,
@@ -152,18 +169,24 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         int $precedence = 1
     ): UnaryOperator {
         return new class($constraint, $operator, $precedence) extends UnaryOperator {
-            public function __construct(Constraint $constraint, private readonly string $operator, private readonly int $precedence)
+            /** @var string */
+            private $operator;
+
+            /** @var int */
+            private $precedence;
+
+            public function __construct(Constraint $constraint, string $operator, int $precedence)
             {
+                $this->operator = $operator;
+                $this->precedence = $precedence;
                 parent::__construct($constraint);
             }
 
-            #[\Override]
             public function operator(): string
             {
                 return $this->operator;
             }
 
-            #[\Override]
             public function precedence(): int
             {
                 return $this->precedence;

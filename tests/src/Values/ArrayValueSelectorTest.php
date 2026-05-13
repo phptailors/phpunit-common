@@ -10,21 +10,19 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use ArrayObject;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\AbstractValueSelector
+ * @covers \Tailors\PHPUnit\Values\ArrayValueSelector
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(AbstractValueSelector::class)]
-#[CoversClass(ArrayValueSelector::class)]
-#[Small]
 final class ArrayValueSelectorTest extends TestCase
 {
     //
@@ -89,8 +87,13 @@ final class ArrayValueSelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-    #[DataProvider('provSupports')]
-    public function testSupports(mixed $subject, bool $expect): void
+
+    /**
+     * @dataProvider provSupports
+     *
+     * @param mixed $subject
+     */
+    public function testSupports($subject, bool $expect): void
     {
         $selector = new ArrayValueSelector();
         self::assertSame($expect, $selector->supports($subject));
@@ -103,8 +106,9 @@ final class ArrayValueSelectorTest extends TestCase
     // @codeCoverageIgnoreStart
     public static function provSelect(): array
     {
-        $arrayAccessFoo = new readonly class() implements \ArrayAccess {
-            private string $foo;
+        $arrayAccessFoo = new class() implements \ArrayAccess {
+            /** @var string */
+            private $foo;
 
             public function __construct()
             {
@@ -181,11 +185,18 @@ final class ArrayValueSelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
+
     /**
-     * @psalm-param array|ArrayObject $subject
+     * @dataProvider provSelect
+     *
+     * @param mixed $subject
+     * @param mixed $key
+     * @param mixed $return
+     * @param mixed $expect
+     *
+     * @psalm-param array|\ArrayObject $subject
      */
-    #[DataProvider('provSelect')]
-    public function testSelect(mixed $subject, mixed $key, mixed $return, mixed $expect): void
+    public function testSelect($subject, $key, $return, $expect): void
     {
         $selector = new ArrayValueSelector();
         self::assertSame($return, $selector->select($subject, $key, $retval));

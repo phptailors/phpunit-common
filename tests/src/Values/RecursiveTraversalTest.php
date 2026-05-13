@@ -10,22 +10,19 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\RecursiveTraversal
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  *
  * @psalm-type StackItem = DummyRecursiveVisitorStackItem
  */
-#[CoversClass(RecursiveTraversal::class)]
-#[CoversClass(DummyRecursiveVisitor::class)]
-#[CoversClass(DummyValuesWrapper::class)]
-#[Small]
 final class RecursiveTraversalTest extends TestCase
 {
     public function testImplementsRecursiveTraversalInterface(): void
@@ -242,10 +239,9 @@ final class RecursiveTraversalTest extends TestCase
         yield 'RecursiveTraversalTest.php:'.__LINE__ => [
             'args'    => [],
             'values'  => $v08,
-            'visitor' => new DummyRecursiveVisitor(
-                fn (mixed $value, array $stack): bool => ['baz', 'qux', 'baz'] !== array_map(fn ($item) => $item->key(), $stack),
-                true
-            ),
+            'visitor' => new DummyRecursiveVisitor(function ($value, array $stack) {
+                return ['baz', 'qux', 'baz'] !== array_map(function ($item) { return $item->key(); }, $stack);
+            }, true),
             'expect' => [
                 ['func' => 'enter', 'node' => $v08, 'path' => []],
                 ['func' => 'makeStackItem', 'node' => $v08, 'key' => 'foo', 'path' => []],
@@ -305,8 +301,10 @@ final class RecursiveTraversalTest extends TestCase
         yield 'RecursiveTraversalTest.php:'.__LINE__ => [
             'args'    => [],
             'values'  => $v09,
-            'visitor' => new DummyRecursiveVisitor(fn (array|ValuesInterface $values, array $stack): bool => (count($stack) < 1)),
-            'expect'  => [
+            'visitor' => new DummyRecursiveVisitor(function ($values, array $stack) {
+                return count($stack) < 1;
+            }),
+            'expect' => [
                 ['func' => 'enter', 'node' => $v09, 'path' => []],
                 ['func' => 'makeStackItem', 'node' => $v09, 'key' => 'foo', 'path' => []],
                 ['func' => 'enter', 'node' => $v09['foo'], 'path' => ['foo']],
@@ -358,8 +356,10 @@ final class RecursiveTraversalTest extends TestCase
         yield 'RecursiveTraversalTest.php:'.__LINE__ => [
             'args'    => [],
             'values'  => $v10,
-            'visitor' => new DummyRecursiveVisitor(fn (mixed $value, array $stack): bool => (count($stack) < 2)),
-            'expect'  => [
+            'visitor' => new DummyRecursiveVisitor(function ($value, array $stack): bool {
+                return count($stack) < 2;
+            }),
+            'expect' => [
                 ['func' => 'enter', 'node' => $v10, 'path' => []],
                 ['func' => 'makeStackItem', 'node' => $v10, 'key' => 'foo', 'path' => []],
                 ['func' => 'enter', 'node' => $v10['foo'], 'path' => ['foo']],
@@ -392,8 +392,10 @@ final class RecursiveTraversalTest extends TestCase
         yield 'RecursiveTraversalTest.php:'.__LINE__ => [
             'args'    => [],
             'values'  => $v10,
-            'visitor' => new DummyRecursiveVisitor(fn ($value, array $stack): bool => (count($stack) < 1)),
-            'expect'  => [
+            'visitor' => new DummyRecursiveVisitor(function ($value, array $stack): bool {
+                return count($stack) < 1;
+            }),
+            'expect' => [
                 ['func' => 'enter', 'node' => $v10, 'path' => []],
                 ['func' => 'makeStackItem', 'node' => $v10, 'key' => 'foo', 'path' => []],
                 ['func' => 'enter', 'node' => $v10['foo'], 'path' => ['foo']],
@@ -886,8 +888,12 @@ final class RecursiveTraversalTest extends TestCase
         ];
     }
 
-    #[DataProvider('provWalk')]
-    public function testWalk(array $args, ValuesInterface $values, DummyRecursiveVisitor $visitor, mixed $expect): void
+    /**
+     * @dataProvider provWalk
+     *
+     * @param mixed $expect
+     */
+    public function testWalk(array $args, ValuesInterface $values, DummyRecursiveVisitor $visitor, $expect): void
     {
         $traversal = new RecursiveTraversal(...$args);
 

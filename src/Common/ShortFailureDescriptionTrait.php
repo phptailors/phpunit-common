@@ -11,6 +11,7 @@
 namespace Tailors\PHPUnit\Common;
 
 use PHPUnit\Framework\Constraint\Operator;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @internal This trait is not covered by the backward compatibility promise
@@ -31,8 +32,10 @@ trait ShortFailureDescriptionTrait
      * cases. This method should return the second part of that sentence.
      *
      * @param mixed $other evaluated value or object
+     *
+     * @throws InvalidArgumentException
      */
-    final public function failureDescription(mixed $other): string
+    final public function failureDescription($other): string
     {
         return $this->short($other, true).' '.$this->toString();
     }
@@ -52,8 +55,10 @@ trait ShortFailureDescriptionTrait
      * @param Operator $operator the $operator of the expression
      * @param mixed    $role     role of $this constraint in the $operator expression
      * @param mixed    $other    evaluated value or object
+     *
+     * @throws InvalidArgumentException
      */
-    final public function failureDescriptionInContext(Operator $operator, mixed $role, mixed $other): string
+    final public function failureDescriptionInContext(Operator $operator, $role, $other): string
     {
         $string = $this->toStringInContext($operator, $role);
 
@@ -79,15 +84,19 @@ trait ShortFailureDescriptionTrait
      * @param Operator $operator the $operator of the expression
      * @param mixed    $role     role of $this constraint in the $operator expression
      */
-    abstract protected function toStringInContext(Operator $operator, mixed $role): string;
+    abstract protected function toStringInContext(Operator $operator, $role): string;
 
     /**
      * Returns short representation of $subject for failureDescription().
+     *
+     * @param mixed $subject
+     *
+     * @throws InvalidArgumentException
      */
-    private function short(mixed $subject, bool $exportObjects = false): string
+    private function short($subject, bool $exportObjects = false): string
     {
         if (is_object($subject)) {
-            return 'object '.$subject::class;
+            return 'object '.get_class($subject);
         }
 
         if (is_array($subject)) {

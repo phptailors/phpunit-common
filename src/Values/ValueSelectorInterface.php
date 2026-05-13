@@ -19,16 +19,23 @@ use Tailors\PHPUnit\InvalidArgumentException;
  */
 interface ValueSelectorInterface
 {
-    public function supports(mixed $subject): bool;
+    /**
+     * @param mixed $subject
+     */
+    public function supports($subject): bool;
 
     /**
+     * @param mixed $subject
+     * @param mixed $key
+     * @param mixed $retval
+     *
      * @param-out mixed $retval
      *
      * @throws InvalidArgumentException
      *
      * @psalm-param array-key $key
      */
-    public function select(mixed $subject, mixed $key, mixed &$retval): bool;
+    public function select($subject, $key, &$retval): bool;
 
     /**
      * A short string naming the subject type(s) supported by this selector

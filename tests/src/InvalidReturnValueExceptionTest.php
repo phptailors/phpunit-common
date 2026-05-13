@@ -10,18 +10,17 @@
 
 namespace Tailors\PHPUnit;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\InvalidReturnValueException
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(InvalidReturnValueException::class)]
-#[Small]
 final class InvalidReturnValueExceptionTest extends TestCase
 {
     public static function provFromExpectedAndActual(): array
@@ -36,7 +35,7 @@ final class InvalidReturnValueExceptionTest extends TestCase
             ],
 
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
-                fn (string $s): string => 2, 'a string', 'integer',
+                function (string $s): string { return 2; }, 'a string', 'integer',
             ],
 
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
@@ -49,8 +48,14 @@ final class InvalidReturnValueExceptionTest extends TestCase
         ];
     }
 
-    #[DataProvider('provFromExpectedAndActual')]
-    public function testFromExpectedAndActual(mixed $function, string $expected, string $actual): void
+    /**
+     * @dataProvider provFromExpectedAndActual
+     *
+     * @param mixed $function
+     *
+     * @psalm-param array{0:object|string,1:string}|callable|string $function
+     */
+    public function testFromExpectedAndActual($function, string $expected, string $actual): void
     {
         $name = self::getFunctionName($function);
         $message = sprintf('Return value of %s() must be %s, %s returned', $name, $expected, $actual);
@@ -69,7 +74,7 @@ final class InvalidReturnValueExceptionTest extends TestCase
                 'inexistentFunction', 'string', 123,
             ],
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
-                self::provFromExpectedTypeAndActualValue(...), 'string', null,
+                [self::class, 'provFromExpectedTypeAndActualValue'], 'string', null,
             ],
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
                 [self::class, 'inexistentMethod'], 'string', null,
@@ -79,13 +84,20 @@ final class InvalidReturnValueExceptionTest extends TestCase
             ],
 
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
-                fn (string $s): string => 2, 'a string', 2,
+                function (string $s): string { return 2; }, 'a string', 2,
             ],
         ];
     }
 
-    #[DataProvider('provFromExpectedTypeAndActualValue')]
-    public function testFromExpectedTypeAndActualValue(mixed $function, string $expected, mixed $actual): void
+    /**
+     * @dataProvider provFromExpectedTypeAndActualValue
+     *
+     * @param mixed $function
+     * @param mixed $actual
+     *
+     * @psalm-param array{0:object|string,1:string}|callable|string $function
+     */
+    public function testFromExpectedTypeAndActualValue($function, string $expected, $actual): void
     {
         $name = self::getFunctionName($function);
         $actualType = is_object($actual) ? 'object' : gettype($actual);
@@ -95,12 +107,17 @@ final class InvalidReturnValueExceptionTest extends TestCase
         self::assertSame($message, $exception->getMessage());
     }
 
-    protected static function getFunctionName(mixed $function): string
+    /**
+     * @param mixed $function
+     *
+     * @psalm-param array{0:object|string,1:string}|callable|string $function
+     */
+    protected static function getFunctionName($function): string
     {
         if (is_string($function)) {
             $name = $function;
         } elseif (is_array($function)) {
-            $name = sprintf('%s::%s', is_object($function[0]) ? $function[0]::class : $function[0], $function[1]);
+            $name = sprintf('%s::%s', is_object($function[0]) ? get_class($function[0]) : $function[0], $function[1]);
         } else {
             is_callable($function, true, $name);
         }

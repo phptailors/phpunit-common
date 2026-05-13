@@ -12,6 +12,7 @@ namespace Tailors\PHPUnit\Common;
 
 use SebastianBergmann\Exporter\Exporter as SebastianExporter;
 use SebastianBergmann\RecursionContext\Context;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise
@@ -22,20 +23,42 @@ final class Exporter
 {
     /**
      * @psalm-suppress MixedInferredReturnType
+     *
+     * @param mixed $value
+     *
+     * @throws InvalidArgumentException
+     *
+     * @psalm-param mixed $value
      */
-    public static function export(mixed $value, bool $exportObjects = false): string
+    public static function export($value, bool $exportObjects = false): string
     {
         // @codeCoverageIgnoreStart
 
+        if (class_exists(\PHPUnit\Util\Exporter::class)) {
+            /**
+             * @psalm-suppress InternalClass
+             * @psalm-suppress InternalMethod
+             * @psalm-suppress MixedReturnStatement
+             */
+            return \PHPUnit\Util\Exporter::export($value, $exportObjects);
+        }
+
         if (self::isExportable($value) || $exportObjects) {
-            return new SebastianExporter()->export($value);
+            return (new SebastianExporter())->export($value);
         }
 
         return '{enable export of objects to see this value}';
         // @codeCoverageIgnoreEnd
     }
 
-    private static function isExportable(mixed &$value, ?Context $context = null): bool
+    /**
+     * @param mixed $value
+     *
+     * @throws InvalidArgumentException
+     *
+     * @psalm-param mixed $value
+     */
+    private static function isExportable(&$value, ?Context $context = null): bool
     {
         // @codeCoverageIgnoreStart
 

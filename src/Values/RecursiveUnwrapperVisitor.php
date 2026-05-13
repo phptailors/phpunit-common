@@ -24,14 +24,26 @@ use Tailors\PHPUnit\InvalidArgumentException;
  */
 final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
 {
-    public const string UNIQUE_TAG = 'unwrapped-values:$1$zIlgusJc$ZZCyNRPOX1SbpKdzoD2hU/';
+    public const UNIQUE_TAG = 'unwrapped-values:$1$zIlgusJc$ZZCyNRPOX1SbpKdzoD2hU/';
 
-    private array $result;
+    /**
+     * @var bool
+     */
+    private $tagging;
 
-    private array $current;
+    /**
+     * @var array
+     */
+    private $result;
 
-    public function __construct(private readonly bool $tagging = true)
+    /**
+     * @var array
+     */
+    private $current;
+
+    public function __construct(bool $tagging = true)
     {
+        $this->tagging = $tagging;
         $this->result = [];
         $this->current = [];
     }
@@ -45,10 +57,11 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
+     * @param array|ValuesInterface $node
+     *
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
-    public function enter(array|ValuesInterface $node, array $stack): bool
+    public function enter($node, array $stack): bool
     {
         if ($node instanceof ValuesInterface) {
             $root = $node;
@@ -73,10 +86,11 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
+     * @param array|ValuesInterface $node
+     *
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
-    public function leave(array|ValuesInterface $node, array $stack, bool $iterating): void
+    public function leave($node, array $stack, bool $iterating): void
     {
         if (!$iterating) {
             return;
@@ -92,32 +106,39 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
+     * @param mixed $node
+     *
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
-    public function visit(mixed $node, array $stack, bool $iterating): void
+    public function visit($node, array $stack, bool $iterating): void
     {
         $this->set($stack, $node);
     }
 
     /**
+     * @param array|ValuesInterface $node
+     *
+     * @return never
+     *
      * @throws CircularDependencyException
      *
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
-    public function cycle(array|ValuesInterface $node, array $stack): never
+    public function cycle($node, array $stack): bool
     {
         self::throwCircular($stack);
     }
 
     /**
+     * @param array|ValuesInterface $node
+     * @param mixed                 $key
+     *
      * @psalm-param array-key       $key
      * @psalm-param list<StackItem> $stack
      *
      * @psalm-return StackItem
      */
-    public function makeStackItem(array|ValuesInterface $node, mixed $key, array $stack): RecursiveVisitorStackItemInterface
+    public function makeStackItem($node, $key, array $stack): RecursiveVisitorStackItemInterface
     {
         return new RecursiveUnwrapperStackItem($node, $key, $this->current);
     }
@@ -132,15 +153,17 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
+     * @param mixed $value
+     *
      * @psalm-param list<StackItem> $stack
      */
-    private function set(array $stack, mixed $value): void
+    private function set(array $stack, $value): void
     {
         $count = count($stack);
 
         if (0 === $count) {
             if (!is_array($value)) {
-                $actual = get_debug_type($value);
+                $actual = is_object($value) ? get_class($value) : gettype($value);
 
                 /** @psalm-suppress MissingThrowsDocblock */
                 throw InvalidArgumentException::fromBackTrace(2, 'an array', $actual);
@@ -156,11 +179,13 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     }
 
     /**
+     * @return never
+     *
      * @throws CircularDependencyException
      *
      * @psalm-param list<StackItem> $stack
      */
-    private static function throwCircular(array $stack): never
+    private static function throwCircular(array $stack): void
     {
         $pathString = self::pathString($stack);
 
@@ -174,7 +199,9 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
      */
     private static function pathString(array $stack): string
     {
-        return implode('', array_map(fn ($item) => '['.var_export($item->key(), true).']', $stack));
+        return implode('', array_map(function ($item) {
+            return '['.var_export($item->key(), true).']';
+        }, $stack));
     }
 }
 

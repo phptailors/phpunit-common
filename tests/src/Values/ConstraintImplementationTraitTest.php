@@ -10,19 +10,18 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversTrait;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\ConstraintImplementationTrait
+ * @covers \Tailors\PHPUnit\Values\DummyConstraintImplementation
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversTrait(ConstraintImplementationTrait::class)]
-#[CoversClass(DummyConstraintImplementation::class)]
-#[Small]
 final class ConstraintImplementationTraitTest extends TestCase
 {
     protected function setUp(): void

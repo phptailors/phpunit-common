@@ -19,19 +19,27 @@ namespace Tailors\PHPUnit\Values;
  */
 final class DummyValues extends \ArrayObject implements ValuesInterface
 {
+    /**
+     * @var ?bool
+     */
+    private $actual;
+
+    /**
+     * @param array|object $array
+     */
     public function __construct(
-        private readonly bool $actual,
-        array|object $array = [],
+        bool $actual,
+        $array = [],
         int $flags = 0,
         string $iteratorClass = \ArrayIterator::class
     ) {
+        $this->actual = $actual;
         parent::__construct($array, $flags, $iteratorClass);
     }
 
     /**
      * @psalm-mutation-free
      */
-    #[\Override]
     public function actual(): bool
     {
         return $this->actual;

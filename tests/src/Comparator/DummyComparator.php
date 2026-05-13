@@ -15,17 +15,23 @@ namespace Tailors\PHPUnit\Comparator;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-final readonly class DummyComparator implements ComparatorInterface
+final class DummyComparator implements ComparatorInterface
 {
-    public function __construct(private bool $compare, private string $adjective) {}
+    private $compare;
 
-    #[\Override]
+    private $adjective;
+
+    public function __construct(bool $compare, string $adjective)
+    {
+        $this->compare = $compare;
+        $this->adjective = $adjective;
+    }
+
     public function compare($left, $right): bool
     {
         return $this->compare;
     }
 
-    #[\Override]
     public function adjective(): string
     {
         return $this->adjective;

@@ -10,23 +10,61 @@
 
 namespace Tailors\PHPUnit\Values;
 
-final readonly class DummyValueSelector implements ValueSelectorInterface
+final class DummyValueSelector implements ValueSelectorInterface
 {
     /**
+     * @var bool|\Closure
+     *
+     * @psalm-var bool|\Closure(mixed):bool
+     *
+     * @psalm-readonly
+     */
+    private $supports;
+
+    /**
+     * @var bool|\Closure
+     *
+     * @psalm-var bool|\Closure(mixed,mixed,mixed):bool
+     *
+     * @psalm-readonly
+     */
+    private $select;
+
+    /**
+     * @var string
+     *
+     * @psalm-readonly
+     */
+    private $subject;
+
+    /**
+     * @var string
+     *
+     * @psalm-readonly
+     */
+    private $selectable;
+
+    /**
+     * @param bool|\Closure $supports
+     * @param bool|\Closure $select
+     *
      * @psalm-param bool|\Closure(mixed):bool             $supports
      * @psalm-param bool|\Closure(mixed,mixed,mixed):bool $select
      */
-    public function __construct(
-        private bool|\Closure $supports = false,
-        private bool|\Closure $select = false,
-        private string $subject = '',
-        private string $selectable = ''
-    ) {}
+    public function __construct($supports = false, $select = false, string $subject = '', string $selectable = '')
+    {
+        $this->supports = $supports;
+        $this->select = $select;
+        $this->subject = $subject;
+        $this->selectable = $selectable;
+    }
 
     /**
+     * @param mixed $subject
+     *
      * @psalm-mutation-free
      */
-    public function supports(mixed $subject): bool
+    public function supports($subject): bool
     {
         if (is_bool($this->supports)) {
             return $this->supports;
@@ -36,13 +74,17 @@ final readonly class DummyValueSelector implements ValueSelectorInterface
     }
 
     /**
+     * @param mixed $subject
+     * @param mixed $key
+     * @param mixed $retval
+     *
      * @psalm-param array-key $key
      *
      * @psalm-param-out mixed $retval
      *
      * @psalm-mutation-free
      */
-    public function select(mixed $subject, mixed $key, mixed &$retval): bool
+    public function select($subject, $key, &$retval): bool
     {
         if (is_bool($this->select)) {
             return $this->select;

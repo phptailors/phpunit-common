@@ -15,27 +15,56 @@ namespace Tailors\PHPUnit\Values;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-final readonly class DummyRecursiveVisitorStackItem implements RecursiveVisitorStackItemInterface
+final class DummyRecursiveVisitorStackItem implements RecursiveVisitorStackItemInterface
 {
     /**
-     * @psalm-param array-key $key
+     * @var array|ValuesInterface
+     *
+     * @psalm-readonly
      */
-    public function __construct(private array|ValuesInterface $node, private mixed $key) {}
+    private $node;
 
     /**
+     * @var mixed
+     *
+     * @psalm-var array-key
+     *
+     * @psalm-readonly
+     */
+    private $key;
+
+    /**
+     * @param array|ValuesInterface $node
+     * @param mixed                 $key
+     *
+     * @psalm-param array-key $key
+     */
+    public function __construct($node, $key)
+    {
+        $this->node = $node;
+        $this->key = $key;
+    }
+
+    /**
+     * @return mixed
+     *
+     * @psalm-return array|ValuesInterface
+     *
      * @psalm-mutation-free
      */
-    public function node(): array|ValuesInterface
+    public function node()
     {
         return $this->node;
     }
 
     /**
+     * @return mixed
+     *
      * @psalm-return array-key
      *
      * @psalm-mutation-free
      */
-    public function key(): mixed
+    public function key()
     {
         return $this->key;
     }

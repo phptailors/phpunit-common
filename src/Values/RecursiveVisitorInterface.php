@@ -20,32 +20,43 @@ namespace Tailors\PHPUnit\Values;
 interface RecursiveVisitorInterface
 {
     /**
+     * @param array|ValuesInterface $node
+     *
      * @psalm-param list<StackItem> $stack
      */
-    public function enter(array|ValuesInterface $node, array $stack): bool;
+    public function enter($node, array $stack): bool;
 
     /**
+     * @param array|ValuesInterface $node
+     *
      * @psalm-param list<StackItem> $stack
      */
-    public function leave(array|ValuesInterface $node, array $stack, bool $iterating): void;
+    public function leave($node, array $stack, bool $iterating): void;
 
     /**
+     * @param mixed $node
+     *
      * @psalm-param list<StackItem> $stack
      */
-    public function visit(mixed $node, array $stack, bool $iterating): void;
+    public function visit($node, array $stack, bool $iterating): void;
 
     /**
+     * @param array|ValuesInterface $node
+     *
      * @psalm-param list<StackItem> $stack
      */
-    public function cycle(array|ValuesInterface $node, array $stack): bool;
+    public function cycle($node, array $stack): bool;
 
     /**
+     * @param array|ValuesInterface $node
+     * @param mixed                 $key
+     *
      * @psalm-param array-key       $key
      * @psalm-param list<StackItem> $stack
      *
      * @psalm-return StackItem
      */
-    public function makeStackItem(array|ValuesInterface $node, mixed $key, array $stack): RecursiveVisitorStackItemInterface;
+    public function makeStackItem($node, $key, array $stack): RecursiveVisitorStackItemInterface;
 
     /**
      * @psalm-param StackItem       $item

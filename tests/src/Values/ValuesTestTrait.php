@@ -10,8 +10,6 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-
 /**
  * @small
  *
@@ -67,7 +65,9 @@ trait ValuesTestTrait
 
     // @codeCoverageIgnoreEnd
 
-    #[DataProvider('provValues')]
+    /**
+     * @dataProvider provValues
+     */
     public function testValues(array $args, array $expect): void
     {
         $class = self::getValuesClass();
