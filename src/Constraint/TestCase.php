@@ -47,7 +47,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     final public function examineCreateConstraint(array $args): Constraint
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
         $this->assertInstanceOf(static::getConstraintClass(), $constraint);
 
         return $constraint;
@@ -67,7 +67,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     final public function examineConstraintUnaryOperatorFailure(array $args, mixed $actual, string $message): void
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
 
         $unary = $this->wrapWithUnaryOperator($constraint);
 
@@ -89,7 +89,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     final public function examineConstraintMatchSucceeds(array $args, mixed $actual): void
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
         self::assertThat($actual, $constraint);
     }
 
@@ -101,7 +101,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     final public function examineConstraintMatchFails(array $args, mixed $actual, string $message): void
     {
-        $constraint = static::createConstraint(...$args);
+        $constraint = $this->createConstraint(...$args);
 
         $this->expectException(ExpectationFailedException::class);
         $this->expectExceptionMessage($message);
@@ -118,7 +118,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     final public function examineNotConstraintMatchSucceeds(array $args, mixed $actual): void
     {
-        $constraint = self::logicalNot(static::createConstraint(...$args));
+        $constraint = self::logicalNot($this->createConstraint(...$args));
         self::assertThat($actual, $constraint);
     }
 
@@ -129,7 +129,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     final public function examineNotConstraintMatchFails(array $args, mixed $actual, string $message): void
     {
-        $constraint = self::logicalNot(static::createConstraint(...$args));
+        $constraint = self::logicalNot($this->createConstraint(...$args));
 
         $this->expectException(ExpectationFailedException::class);
         $this->expectExceptionMessage($message);

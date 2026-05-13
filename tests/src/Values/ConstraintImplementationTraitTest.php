@@ -25,11 +25,13 @@ use PHPUnit\Framework\TestCase;
 #[Small]
 final class ConstraintImplementationTraitTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         self::resetDummyConstraintImplementation();
     }
 
+    #[\Override]
     protected function tearDown(): void
     {
         self::resetDummyConstraintImplementation();
