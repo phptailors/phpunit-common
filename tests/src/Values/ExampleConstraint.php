@@ -28,13 +28,11 @@ final class ExampleConstraint extends AbstractConstraint
     /**
      * @throws InvalidArgumentException
      */
-    #[\Override]
     protected static function validateExpectations(array $expected, int $argument, int $distance = 1): void {}
 
     /**
      * Creates instance of ValueSelectorInterface.
      */
-    #[\Override]
     protected static function makeSelector(): ValueSelectorInterface
     {
         return new ArrayValueSelector();
@@ -43,7 +41,6 @@ final class ExampleConstraint extends AbstractConstraint
     /**
      * Creates instance of ComparatorInterface.
      */
-    #[\Override]
     protected static function makeComparator(): ComparatorInterface
     {
         return new IdentityComparator();

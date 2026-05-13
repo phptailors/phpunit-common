@@ -38,7 +38,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
     /**
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function enter(array|ValuesInterface $node, array $stack): bool
     {
         $this->trace[] = ['func' => 'enter', 'node' => $node, 'path' => self::path($stack)];
@@ -53,7 +52,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
     /**
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function leave(array|ValuesInterface $node, array $stack, bool $iterating): void
     {
         $this->trace[] = ['func' => 'leave', 'node' => $node, 'path' => self::path($stack)];
@@ -62,7 +60,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
     /**
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function visit(mixed $node, array $stack, bool $iterating): void
     {
         $this->trace[] = ['func' => 'visit', 'node' => $node, 'path' => self::path($stack)];
@@ -71,7 +68,6 @@ final class DummyRecursiveVisitor implements RecursiveVisitorInterface
     /**
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function cycle(array|ValuesInterface $node, array $stack): bool
     {
         $this->trace[] = ['func' => 'cycle', 'node' => $node, 'path' => self::path($stack)];

@@ -27,8 +27,19 @@ final class Exporter
     {
         // @codeCoverageIgnoreStart
 
+        /** @psalm-suppress DeprecatedClass */
+        if (class_exists(\PHPUnit\Util\Exporter::class)) {
+            /**
+             * @psalm-suppress InternalClass
+             * @psalm-suppress InternalMethod
+             * @psalm-suppress MixedReturnStatement
+             * @psalm-suppress DeprecatedClass
+             */
+            return \PHPUnit\Util\Exporter::export($value, $exportObjects);
+        }
+
         if (self::isExportable($value) || $exportObjects) {
-            return new SebastianExporter()->export($value);
+            return (new SebastianExporter())->export($value);
         }
 
         return '{enable export of objects to see this value}';

@@ -10,18 +10,17 @@
 
 namespace Tailors\PHPUnit;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\InvalidReturnValueException
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(InvalidReturnValueException::class)]
-#[Small]
 final class InvalidReturnValueExceptionTest extends TestCase
 {
     public static function provFromExpectedAndActual(): array
@@ -49,7 +48,9 @@ final class InvalidReturnValueExceptionTest extends TestCase
         ];
     }
 
-    #[DataProvider('provFromExpectedAndActual')]
+    /**
+     * @dataProvider provFromExpectedAndActual
+     */
     public function testFromExpectedAndActual(mixed $function, string $expected, string $actual): void
     {
         $name = self::getFunctionName($function);
@@ -69,7 +70,7 @@ final class InvalidReturnValueExceptionTest extends TestCase
                 'inexistentFunction', 'string', 123,
             ],
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
-                self::provFromExpectedTypeAndActualValue(...), 'string', null,
+                [self::class, 'provFromExpectedTypeAndActualValue'], 'string', null,
             ],
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
                 [self::class, 'inexistentMethod'], 'string', null,
@@ -84,7 +85,9 @@ final class InvalidReturnValueExceptionTest extends TestCase
         ];
     }
 
-    #[DataProvider('provFromExpectedTypeAndActualValue')]
+    /**
+     * @dataProvider provFromExpectedTypeAndActualValue
+     */
     public function testFromExpectedTypeAndActualValue(mixed $function, string $expected, mixed $actual): void
     {
         $name = self::getFunctionName($function);

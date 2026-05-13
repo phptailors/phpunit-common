@@ -31,7 +31,6 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
     /**
      * @psalm-mutation-free
      */
-    #[\Override]
     public function actual(): bool
     {
         return $this->actual;

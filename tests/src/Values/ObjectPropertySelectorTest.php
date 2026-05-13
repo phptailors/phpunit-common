@@ -10,21 +10,20 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\AbstractPropertySelector
+ * @covers \Tailors\PHPUnit\Values\AbstractValueSelector
+ * @covers \Tailors\PHPUnit\Values\ObjectPropertySelector
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(AbstractPropertySelector::class)]
-#[CoversClass(AbstractValueSelector::class)]
-#[CoversClass(ObjectPropertySelector::class)]
-#[Small]
 final class ObjectPropertySelectorTest extends TestCase
 {
     //
@@ -83,7 +82,9 @@ final class ObjectPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-    #[DataProvider('provSupports')]
+    /**
+     * @dataProvider provSupports
+     */
     public function testSupports(mixed $subject, bool $expect): void
     {
         $selector = new ObjectPropertySelector();
@@ -160,7 +161,9 @@ final class ObjectPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-    #[DataProvider('provSelect')]
+    /**
+     * @dataProvider provSelect
+     */
     public function testSelect(object $object, mixed $key, mixed $return, mixed $expect): void
     {
         $selector = new ObjectPropertySelector();
@@ -251,7 +254,10 @@ final class ObjectPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-    #[DataProvider('provSelectThrowsOnNonobject')]
+
+    /**
+     * @dataProvider provSelectThrowsOnNonobject
+     */
     public function testSelectThrowsOnNonobject(string $key, string $method): void
     {
         $selector = new ObjectPropertySelector();

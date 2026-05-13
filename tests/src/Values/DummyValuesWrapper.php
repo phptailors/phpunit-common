@@ -15,11 +15,10 @@ namespace Tailors\PHPUnit\Values;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-final readonly class DummyValuesWrapper implements ValuesWrapperInterface
+final class DummyValuesWrapper implements ValuesWrapperInterface
 {
-    public function __construct(private ValuesInterface $values) {}
+    public function __construct(private readonly ValuesInterface $values) {}
 
-    #[\Override]
     public function getValues(): ValuesInterface
     {
         return $this->values;

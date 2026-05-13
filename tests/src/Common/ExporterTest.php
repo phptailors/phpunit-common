@@ -10,19 +10,18 @@
 
 namespace Tailors\PHPUnit\Common;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Exporter\Exporter as SebastianExporter;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Common\Exporter
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(Exporter::class)]
-#[Small]
 final class ExporterTest extends TestCase
 {
     public static function provExport(): iterable
@@ -38,7 +37,9 @@ final class ExporterTest extends TestCase
         yield [[new \stdClass(), true], 'stdClass Object %s'];
     }
 
-    #[DataProvider('provExport')]
+    /**
+     * @dataProvider provExport
+     */
     public function testExport(array $args, string $format): void
     {
         $this->assertStringMatchesFormat($format, Exporter::export(...$args));
@@ -48,7 +49,7 @@ final class ExporterTest extends TestCase
     {
         $array = [];
         $array[0] = &$array;
-        $format = new SebastianExporter()->export($array);
+        $format = (new SebastianExporter())->export($array);
         $this->assertStringMatchesFormat($format, Exporter::export($array));
     }
 
@@ -56,7 +57,7 @@ final class ExporterTest extends TestCase
     {
         $array = ['foo' => new \ArrayObject()];
         $array['foo'][0] = &$array;
-        $format = new SebastianExporter()->export($array);
+        $format = (new SebastianExporter())->export($array);
         $this->assertStringMatchesFormat('{enable export of objects to see this value}', Exporter::export($array));
         $this->assertStringMatchesFormat($format, Exporter::export($array, true));
     }

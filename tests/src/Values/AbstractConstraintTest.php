@@ -10,9 +10,6 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\Operator;
 use PHPUnit\Framework\Constraint\UnaryOperator;
@@ -23,12 +20,14 @@ use Tailors\PHPUnit\Comparator\ComparatorWrapperInterface;
 use Tailors\PHPUnit\Comparator\IdentityComparator;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\AbstractConstraint
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(AbstractConstraint::class)]
-#[Small]
 final class AbstractConstraintTest extends TestCase
 {
     public static function createDummyConstraint(
@@ -39,19 +38,19 @@ final class AbstractConstraintTest extends TestCase
         ?RecursiveUnwrapperInterface $unwrapper = null
     ) {
         if (null === $expected) {
-            $expected = $test->createStub(ValuesInterface::class);
+            $expected = $test->createMock(ValuesInterface::class);
         }
 
         if (null === $comparator) {
-            $comparator = $test->createStub(ComparatorInterface::class);
+            $comparator = $test->createMock(ComparatorInterface::class);
         }
 
         if (null === $valueSelector) {
-            $valueSelector = $test->createStub(ValueSelectorInterface::class);
+            $valueSelector = $test->createMock(ValueSelectorInterface::class);
         }
 
         if (null === $unwrapper) {
-            $unwrapper = $test->createStub(RecursiveUnwrapperInterface::class);
+            $unwrapper = $test->createMock(RecursiveUnwrapperInterface::class);
         }
 
         return DummyAbstractConstraint::create($expected, $comparator, $valueSelector, $unwrapper);
@@ -100,9 +99,9 @@ final class AbstractConstraintTest extends TestCase
 
     public function testConstruct(): void
     {
-        $expected = $this->createStub(ValuesInterface::class);
-        $comparator = $this->createStub(ComparatorInterface::class);
-        $valueSelector = $this->createStub(ValueSelectorInterface::class);
+        $expected = $this->createMock(ValuesInterface::class);
+        $comparator = $this->createMock(ComparatorInterface::class);
+        $valueSelector = $this->createMock(ValueSelectorInterface::class);
 
         $constraint = self::createDummyConstraint($this, $expected, $comparator, $valueSelector);
 
@@ -113,20 +112,23 @@ final class AbstractConstraintTest extends TestCase
 
     public function testToString(): void
     {
-        $expected = $this->createStub(ValuesInterface::class);
-        $comparator = $this->createStub(ComparatorInterface::class);
+        $expected = $this->createMock(ValuesInterface::class);
+        $comparator = $this->createMock(ComparatorInterface::class);
 
-        $valueSelector = $this->createStub(ValueSelectorInterface::class);
+        $valueSelector = $this->createMock(ValueSelectorInterface::class);
 
-        $valueSelector->method('subject')
+        $valueSelector->expects($this->once())
+            ->method('subject')
             ->willReturn('a tree')
         ;
 
-        $valueSelector->method('selectable')
+        $valueSelector->expects($this->once())
+            ->method('selectable')
             ->willReturn('apples')
         ;
 
-        $comparator->method('adjective')
+        $comparator->expects($this->once())
+            ->method('adjective')
             ->willReturn('having colors')
         ;
 
@@ -138,20 +140,23 @@ final class AbstractConstraintTest extends TestCase
     public static function provToStringInContext(): array
     {
         $constraint = function (TestCase $test): Constraint {
-            $expected = $test->createStub(ValuesInterface::class);
-            $comparator = $test->createStub(ComparatorInterface::class);
+            $expected = $test->createMock(ValuesInterface::class);
+            $comparator = $test->createMock(ComparatorInterface::class);
 
-            $valueSelector = $test->createStub(ValueSelectorInterface::class);
+            $valueSelector = $test->createMock(ValueSelectorInterface::class);
 
-            $valueSelector->method('subject')
+            $valueSelector->expects($test->any())
+                ->method('subject')
                 ->willReturn('a tree')
             ;
 
-            $valueSelector->method('selectable')
+            $valueSelector->expects($test->any())
+                ->method('selectable')
                 ->willReturn('apples')
             ;
 
-            $comparator->method('adjective')
+            $comparator->expects($test->any())
+                ->method('adjective')
                 ->willReturn('having colors')
             ;
 
@@ -172,8 +177,9 @@ final class AbstractConstraintTest extends TestCase
 
     /**
      * @psalm-param \Closure(TestCase $test):Operator $operator
+     *
+     * @dataProvider provToStringInContext
      */
-    #[DataProvider('provToStringInContext')]
     public function testToStringInContext(\Closure $operator, string $expect): void
     {
         $this->assertSame($expect, $operator($this)->toString());
@@ -184,18 +190,11 @@ final class AbstractConstraintTest extends TestCase
         $fooFOO = fn (TestCase $test) => self::createArrayValuesIdentityConstraint($test, ['foo' => 'FOO']);
         $gezGEZ = fn (TestCase $test) => self::createArrayValuesIdentityConstraint($test, ['gez' => 'GEZ']);
 
-        // an unary constraint, always false, but produces exception message
-        $unaryOp = fn (TestCase $test) => new class($fooFOO($test)) extends UnaryOperator {
-            public function operator(): string
-            {
-                return 'noop';
-            }
-
-            public function precedence(): int
-            {
-                return 1;
-            }
-        };
+        // an unary constraint, always false
+        $unaryOp = fn (TestCase $test) => $test->getMockBuilder(UnaryOperator::class)
+            ->setConstructorArgs([$fooFOO($test)])
+            ->getMockForAbstractClass()
+        ;
 
         return [
             'AbstractConstraintTest.php:'.__LINE__ => [
@@ -288,10 +287,11 @@ final class AbstractConstraintTest extends TestCase
     }
 
     /**
+     * @dataProvider provEvaluate
+     *
      * @psalm-param \Closure(TestCase):Constraint $constraint
      * @psalm-param non-empty-list                $args
      */
-    #[DataProvider('provEvaluate')]
     public function testEvaluate(\Closure $constraint, array $args, mixed $expect): void
     {
         if (is_array($expect)) {

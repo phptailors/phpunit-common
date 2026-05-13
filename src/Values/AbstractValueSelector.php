@@ -26,7 +26,6 @@ abstract class AbstractValueSelector implements ValueSelectorInterface
      *
      * @psalm-param array-key $key
      */
-    #[\Override]
     final public function select(mixed $subject, mixed $key, mixed &$retval = null): bool
     {
         $this->assertSupports($subject, 1);

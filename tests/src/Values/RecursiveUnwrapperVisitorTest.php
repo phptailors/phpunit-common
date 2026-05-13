@@ -10,13 +10,14 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\CircularDependencyException;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\RecursiveUnwrapperVisitor
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
@@ -25,11 +26,9 @@ use Tailors\PHPUnit\CircularDependencyException;
  * @psalm-type EnterTestCall = array{args: array{node: array|ValuesInterface}, return: mixed, next?: array-key}
  * @psalm-type VisitTestCall = array{args: array{node: mixed}, key?: array-key}
  */
-#[CoversClass(RecursiveUnwrapperVisitor::class)]
-#[Small]
 final class RecursiveUnwrapperVisitorTest extends TestCase
 {
-    public const string UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
+    public const UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
 
     //
     //
@@ -78,16 +77,17 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     }
 
     /**
+     * @dataProvider provCycle
+     *
      * @psalm-param list<StackItem> $stack
      */
-    #[DataProvider('provCycle')]
     public function testCycle(array $stack, string $expect): void
     {
         $rePath = preg_quote($expect, '/');
         $this->expectException(CircularDependencyException::class);
         $this->expectExceptionMessageMatches("/^Circular dependency found in nested values at \\\$values{$rePath}\\.$/");
 
-        new RecursiveUnwrapperVisitor()->cycle([], $stack);
+        (new RecursiveUnwrapperVisitor())->cycle([], $stack);
     }
 
     /**
@@ -280,9 +280,10 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     }
 
     /**
+     * @dataProvider provEnterLeave
+     *
      * @psalm-param non-empty-list<EnterTestCall> $calls
      */
-    #[DataProvider('provEnterLeave')]
     public function testEnterLeave(array $ctor, array $calls, mixed $result): void
     {
         $visitor = new RecursiveUnwrapperVisitor(...$ctor);
@@ -392,9 +393,10 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     }
 
     /**
+     * @dataProvider provVisit
+     *
      * @psalm-param non-empty-list<VisitTestCall> $calls
      */
-    #[DataProvider('provVisit')]
     public function testVisit(array|ValuesInterface $root, bool $iter, array $calls, mixed $result): void
     {
         $visitor = new RecursiveUnwrapperVisitor();

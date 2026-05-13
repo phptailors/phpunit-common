@@ -15,11 +15,10 @@ namespace Tailors\PHPUnit\Comparator;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-final readonly class DummyComparatorWrapper implements ComparatorWrapperInterface
+final class DummyComparatorWrapper implements ComparatorWrapperInterface
 {
-    public function __construct(private ComparatorInterface $comparator) {}
+    public function __construct(private readonly ComparatorInterface $comparator) {}
 
-    #[\Override]
     public function getComparator(): ComparatorInterface
     {
         return $this->comparator;

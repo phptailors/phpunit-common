@@ -10,9 +10,6 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\InvalidArgumentException;
 
@@ -27,14 +24,16 @@ final class ClassWithNonStaticMethodFooBLSGG
 }
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\AbstractPropertySelector
+ * @covers \Tailors\PHPUnit\Values\AbstractValueSelector
+ * @covers \Tailors\PHPUnit\Values\ClassPropertySelector
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(AbstractPropertySelector::class)]
-#[CoversClass(AbstractValueSelector::class)]
-#[CoversClass(ClassPropertySelector::class)]
-#[Small]
 final class ClassPropertySelectorTest extends TestCase
 {
     //
@@ -93,7 +92,9 @@ final class ClassPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-    #[DataProvider('provSupports')]
+    /**
+     * @dataProvider provSupports
+     */
     public function testSupports(mixed $subject, bool $expect): void
     {
         $selector = new ClassPropertySelector();
@@ -157,7 +158,9 @@ final class ClassPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-    #[DataProvider('provSelect')]
+    /**
+     * @dataProvider provSelect
+     */
     public function testSelect(string $class, mixed $key, mixed $return, mixed $expect): void
     {
         $selector = new ClassPropertySelector();
@@ -269,7 +272,10 @@ final class ClassPropertySelectorTest extends TestCase
     }
 
     // @codeCoverageIgnoreEnd
-    #[DataProvider('provSelectThrowsOnNonClass')]
+
+    /**
+     * @dataProvider provSelectThrowsOnNonClass
+     */
     public function testSelectThrowsOnNonClass(string $key, string $method): void
     {
         $selector = new ClassPropertySelector();

@@ -22,7 +22,6 @@ final class ExpectedValues extends AbstractValues
     /**
      * @psalm-mutation-free
      */
-    #[\Override]
     final public function actual(): bool
     {
         return false;

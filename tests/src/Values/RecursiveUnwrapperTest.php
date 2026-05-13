@@ -10,22 +10,21 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\CircularDependencyException;
 
 /**
+ * @small
+ *
+ * @covers \Tailors\PHPUnit\Values\RecursiveUnwrapper
+ *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversClass(RecursiveUnwrapper::class)]
-#[Small]
 final class RecursiveUnwrapperTest extends TestCase
 {
-    public const string UNIQUE_TAG = RecursiveUnwrapper::UNIQUE_TAG;
+    public const UNIQUE_TAG = RecursiveUnwrapper::UNIQUE_TAG;
 
     //
     //
@@ -292,7 +291,9 @@ final class RecursiveUnwrapperTest extends TestCase
         ];
     }
 
-    #[DataProvider('provUnwrap')]
+    /**
+     * @dataProvider provUnwrap
+     */
     public function testUnwrap(array $args, ValuesInterface $values, mixed $expect): void
     {
         $unwrapper = new RecursiveUnwrapper(...$args);
@@ -403,14 +404,16 @@ final class RecursiveUnwrapperTest extends TestCase
         ];
     }
 
-    #[DataProvider('provUnwrapThrowsExceptionOnCircularDependency')]
+    /**
+     * @dataProvider provUnwrapThrowsExceptionOnCircularDependency
+     */
     public function testUnwrapThrowsExceptionOnCircularDependency(ValuesInterface $values, string $path): void
     {
         $rePath = preg_quote($path, '/');
         $this->expectException(CircularDependencyException::class);
         $this->expectExceptionMessageMatches("/^Circular dependency found in nested values at \\\$values{$rePath}\\.$/");
 
-        new RecursiveUnwrapper()->unwrap($values);
+        (new RecursiveUnwrapper())->unwrap($values);
     }
 }
 // vim: syntax=php sw=4 ts=4 et:

@@ -15,11 +15,10 @@ namespace Tailors\PHPUnit\Values;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-final readonly class DummyValueSelectorWrapper implements ValueSelectorWrapperInterface
+final class DummyValueSelectorWrapper implements ValueSelectorWrapperInterface
 {
-    public function __construct(private ValueSelectorInterface $valueSelector) {}
+    public function __construct(private readonly ValueSelectorInterface $valueSelector) {}
 
-    #[\Override]
     public function getValueSelector(): ValueSelectorInterface
     {
         return $this->valueSelector;
