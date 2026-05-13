@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @small
  *
+ * @covers \Tailors\PHPUnit\Values\AbstractValues
  * @covers \Tailors\PHPUnit\Values\ExpectedValues
  * @covers \Tailors\PHPUnit\Values\ValuesTestTrait
  *

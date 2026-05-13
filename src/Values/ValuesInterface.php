@@ -38,15 +38,11 @@ interface ValuesInterface extends \Traversable, \ArrayAccess, \Countable
 
     /**
      * @param array|\Traversable $array
-     *
-     * @psalm-param array|\Traversable<array-key,mixed> $array
      */
     public function createActualValues($array = []): ValuesInterface;
 
     /**
      * @param array|\Traversable $array
-     *
-     * @psalm-param array|\Traversable<array-key,mixed> $array
      */
     public function createExpectedValues($array = []): ValuesInterface;
 }

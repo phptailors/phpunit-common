@@ -59,14 +59,14 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
         static $tag = null;
 
         if (null === $tag) {
+            // @codeCoverageIgnoreStart
             try {
                 $hex = bin2hex(random_bytes(self::TAGSIZE));
             } catch (\Exception $_e) {
-                // @codeCoverageIgnoreStart
                 $hex = '4694a81d074f3386a9b8c7c2ad04914e120f1a10';
-                // @codeCoverageIgnoreEnd
             }
             $tag = "unwrapped-values:{$hex}";
+            // @codeCoverageIgnoreEnd
         }
 
         return $tag;
@@ -123,7 +123,7 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
         if ($node instanceof ValuesInterface && $this->tagging) {
             // Distinguish unwrapped values from regular arrays
             // by adding UNIQUE TAG AT THE END of $array.
-            $this->current[self::tag()] = true;
+            $this->current[self::tag()] = $node->tag();
         }
 
         $this->set($stack, $this->current);

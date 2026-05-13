@@ -40,26 +40,30 @@ trait ValuesTestTrait
     }
 
     // @codeCoverageIgnoreStart
-    public static function provValues(): array
+    public static function provValues(): iterable
     {
-        return [
-            // #0
-            [
-                'args'   => [],
-                'expect' => [],
-            ],
+        // #0
+        yield 'ValuesTestTrait.php:'.__LINE__ => [
+            'args'   => [],
+            'expect' => [],
+        ];
 
-            // #1
-            [
-                'args'   => [[]],
-                'expect' => [],
-            ],
+        // #1
+        yield 'ValuesTestTrait.php:'.__LINE__ => [
+            'args'   => [[]],
+            'expect' => [],
+        ];
 
-            // #2
-            [
-                'args'   => [['foo' => 'FOO']],
-                'expect' => ['foo' => 'FOO'],
-            ],
+        // #2
+        yield 'ValuesTestTrait.php:'.__LINE__ => [
+            'args'   => [['foo' => 'FOO']],
+            'expect' => ['foo' => 'FOO'],
+        ];
+
+        // #3
+        yield 'ValuesTestTrait.php:'.__LINE__ => [
+            'args'   => [new \ArrayObject(['foo' => 'FOO'])],
+            'expect' => ['foo' => 'FOO'],
         ];
     }
 
@@ -67,8 +71,12 @@ trait ValuesTestTrait
 
     /**
      * @dataProvider provValues
+     *
+     * @param mixed $expect
+     *
+     * @psalm-param list{0?:array|\Traversable} $args
      */
-    public function testValues(array $args, array $expect): void
+    public function testValues(array $args, $expect): void
     {
         $class = self::getValuesClass();
         $object = new $class(...$args);
@@ -76,6 +84,70 @@ trait ValuesTestTrait
         self::assertSame($expect, iterator_to_array($object));
         self::assertSame($expect, (array) $object);
         self::assertSame(ActualValues::class === $class, $object->actual());
+    }
+
+    public function testAbstractValuesTag(): void
+    {
+        $this->assertSame(AbstractValues::abstractValuesTag(), ActualValues::abstractValuesTag());
+        $this->assertSame(AbstractValues::abstractValuesTag(), ExpectedValues::abstractValuesTag());
+    }
+
+    public static function provTag(): iterable
+    {
+        $defaultTag = ActualValues::abstractValuesTag();
+
+        // #0
+        yield 'ValuesTestTrait.php:'.__LINE__ => [
+            'args'   => [],
+            'expect' => $defaultTag,
+        ];
+
+        // #1
+        yield 'ValuesTestTrait.php:'.__LINE__ => [
+            'args'   => [['foo' => 'FOO']],
+            'expect' => $defaultTag,
+        ];
+
+        // #2
+        yield 'ValuesTestTrait.php:'.__LINE__ => [
+            'args'   => [['foo' => 'FOO'], 'TAGFOO'],
+            'expect' => 'TAGFOO',
+        ];
+    }
+
+    /**
+     * @dataProvider provTag
+     *
+     * @param mixed $expect
+     *
+     * @psalm-param list{0?:array|\Traversable,1?:null|non-empty-string} $args
+     */
+    public function testTag(array $args, $expect): void
+    {
+        $class = self::getValuesClass();
+        $object = new $class(...$args);
+
+        $this->assertSame($expect, $object->tag());
+    }
+
+    public function testCreateActualValues(): void
+    {
+        $class = self::getValuesClass();
+        $object = new $class([], 'TAGFOO');
+        $actual = $object->createActualValues(['foo' => 'FOO']);
+
+        $this->assertSame(['foo' => 'FOO'], (array) $actual);
+        $this->assertSame('TAGFOO', $actual->tag());
+    }
+
+    public function testCreateExpectedValues(): void
+    {
+        $class = self::getValuesClass();
+        $object = new $class([], 'TAGFOO');
+        $actual = $object->createExpectedValues(['foo' => 'FOO']);
+
+        $this->assertSame(['foo' => 'FOO'], (array) $actual);
+        $this->assertSame('TAGFOO', $actual->tag());
     }
 }
 // vim: syntax=php sw=4 ts=4 et:

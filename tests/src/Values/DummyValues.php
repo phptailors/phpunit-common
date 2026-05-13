@@ -63,6 +63,7 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
         if (!is_array($array)) {
             $array = iterator_to_array($array);
         }
+
         return new self($array);
     }
 
@@ -76,6 +77,7 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
         if (!is_array($array)) {
             $array = iterator_to_array($array);
         }
+
         return new self($array);
     }
 }

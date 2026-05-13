@@ -28,35 +28,72 @@ abstract class AbstractValues extends \ArrayObject implements ValuesInterface
      *
      * @psalm-var ?non-empty-string
      */
-    protected $tag;
+    private $tag;
+
+    /**
+     * @var ?string
+     *
+     * @psalm-var ?non-empty-string
+     */
+    private static $abstractValuesTag;
+
+    /**
+     * @param array|\Traversable $array
+     *
+     * @psalm-param ?non-empty-string $tag
+     */
+    final public function __construct($array = [], ?string $tag = null)
+    {
+        $this->tag = $tag;
+
+        if (!is_array($array)) {
+            $array = iterator_to_array($array);
+        }
+
+        parent::__construct($array);
+    }
 
     /**
      * @psalm-return non-empty-string
      */
     final public static function abstractValuesTag(): string
     {
-        /** @psalm-var ?non-empty-string */
-        static $tag = null;
-
-        if (null === $tag) {
+        if (null === self::$abstractValuesTag) {
+            // @codeCoverageIgnoreStart
             try {
                 $hex = bin2hex(random_bytes(self::TAGSIZE));
             } catch (\Exception $_e) {
-                // @codeCoverageIgnoreStart
                 $hex = 'b431aa5424c80003a46c769389f28d0bcde7bf21';
-                // @codeCoverageIgnoreEnd
             }
-            $tag = "abstract-values:{$hex}";
+            self::$abstractValuesTag = "abstract-values:{$hex}";
+            // @codeCoverageIgnoreEnd
         }
-        return $tag;
+
+        return self::$abstractValuesTag;
     }
 
     /**
      * @psalm-return non-empty-string
      */
-    public function tag(): string
+    final public function tag(): string
     {
         return $this->tag ?? self::abstractValuesTag();
+    }
+
+    /**
+     * @param array|\Traversable $array
+     */
+    final public function createActualValues($array = []): ValuesInterface
+    {
+        return new ActualValues($array, $this->tag);
+    }
+
+    /**
+     * @param array|\Traversable $array
+     */
+    final public function createExpectedValues($array = []): ValuesInterface
+    {
+        return new ExpectedValues($array, $this->tag);
     }
 }
 

@@ -17,6 +17,7 @@ use Tailors\PHPUnit\InvalidArgumentException;
 /**
  * @small
  *
+ * @covers \Tailors\PHPUnit\Values\AbstractValues
  * @covers \Tailors\PHPUnit\Values\RecursiveUnwrapperVisitor
  *
  * @internal This class is not covered by the backward compatibility promise
@@ -99,6 +100,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     public static function provEnterLeave(): iterable
     {
         $tagk = RecursiveUnwrapperVisitor::tag();
+        $tagv = (new ExpectedValues())->tag();
 
         //
         // 01
@@ -131,7 +133,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                     'return' => true,
                 ],
             ],
-            'result' => [$tagk => true],
+            'result' => [$tagk => $tagv],
         ];
 
         //
@@ -167,10 +169,10 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
             'result' => [
                 'foo' => [
                     'bar' => [
-                        $tagk => true,
+                        $tagk => $tagv,
                     ],
                 ],
-                $tagk => true,
+                $tagk => $tagv,
             ],
         ];
 
@@ -205,7 +207,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
             ],
             'result' => [
                 'foo' => [],
-                $tagk => true,
+                $tagk => $tagv,
             ],
         ];
 
@@ -323,6 +325,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     public static function provVisit(): iterable
     {
         $tagk = RecursiveUnwrapperVisitor::tag();
+        $tagv = (new ExpectedValues())->tag();
 
         //
         // 01
@@ -392,7 +395,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
             'result' => [
                 'foo' => 'FOO',
                 'bar' => ['gez' => 'GEZ'],
-                $tagk => true,
+                $tagk => $tagv,
             ],
         ];
     }
