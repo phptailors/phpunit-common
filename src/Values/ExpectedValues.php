@@ -19,10 +19,12 @@ namespace Tailors\PHPUnit\Values;
  */
 final class ExpectedValues extends AbstractValues
 {
+    use AbstractValuesTrait;
+
     /**
      * @psalm-mutation-free
      */
-    final public function actual(): bool
+    public function actual(): bool
     {
         return false;
     }

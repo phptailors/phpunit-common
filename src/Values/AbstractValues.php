@@ -19,6 +19,45 @@ namespace Tailors\PHPUnit\Values;
  *
  * @template-extends \ArrayObject<array-key,mixed>
  */
-abstract class AbstractValues extends \ArrayObject implements ValuesInterface {}
+abstract class AbstractValues extends \ArrayObject implements ValuesInterface
+{
+    public const TAGSIZE = 20;
+
+    /**
+     * @var ?string
+     *
+     * @psalm-var ?non-empty-string
+     */
+    protected $tag;
+
+    /**
+     * @psalm-return non-empty-string
+     */
+    final public static function abstractValuesTag(): string
+    {
+        /** @psalm-var ?non-empty-string */
+        static $tag = null;
+
+        if (null === $tag) {
+            try {
+                $hex = bin2hex(random_bytes(self::TAGSIZE));
+            } catch (\Exception $_e) {
+                // @codeCoverageIgnoreStart
+                $hex = 'b431aa5424c80003a46c769389f28d0bcde7bf21';
+                // @codeCoverageIgnoreEnd
+            }
+            $tag = "abstract-values:{$hex}";
+        }
+        return $tag;
+    }
+
+    /**
+     * @psalm-return non-empty-string
+     */
+    public function tag(): string
+    {
+        return $this->tag ?? self::abstractValuesTag();
+    }
+}
 
 // vim: syntax=php sw=4 ts=4 et:

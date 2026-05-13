@@ -26,6 +26,29 @@ interface ValuesInterface extends \Traversable, \ArrayAccess, \Countable
      * Returns true if this object represents actual values (as opposite to expected values).
      */
     public function actual(): bool;
+
+    /**
+     * Returns the tag for category of the values. Different tags shall be
+     * returned for different categories, such as selected array values, key
+     * sorted array values, object properties, class properties, etc.
+     *
+     * @psalm-return non-empty-string
+     */
+    public function tag(): string;
+
+    /**
+     * @param array|\Traversable $array
+     *
+     * @psalm-param array|\Traversable<array-key,mixed> $array
+     */
+    public function createActualValues($array = []): ValuesInterface;
+
+    /**
+     * @param array|\Traversable $array
+     *
+     * @psalm-param array|\Traversable<array-key,mixed> $array
+     */
+    public function createExpectedValues($array = []): ValuesInterface;
 }
 
 // vim: syntax=php sw=4 ts=4 et:

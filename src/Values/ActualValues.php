@@ -19,6 +19,8 @@ namespace Tailors\PHPUnit\Values;
  */
 final class ActualValues extends AbstractValues
 {
+    use AbstractValuesTrait;
+
     /**
      * @psalm-mutation-free
      */
