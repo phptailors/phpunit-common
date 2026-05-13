@@ -25,13 +25,11 @@ use PHPUnit\Framework\Constraint\LogicalOr;
 #[Small]
 final class TestCaseTest extends TestCase
 {
-    #[\Override]
     public static function createConstraint(...$args): Constraint
     {
         return LogicalOr::fromConstraints(new IsTrue(...$args), new IsTrue(...$args));
     }
 
-    #[\Override]
     public static function getConstraintClass(): string
     {
         return LogicalOr::class;

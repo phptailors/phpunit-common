@@ -29,7 +29,7 @@ use Tailors\PHPUnit\CircularDependencyException;
 #[Small]
 final class RecursiveUnwrapperVisitorTest extends TestCase
 {
-    public const string UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
+    public const UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
 
     //
     //
@@ -87,7 +87,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
         $this->expectException(CircularDependencyException::class);
         $this->expectExceptionMessageMatches("/^Circular dependency found in nested values at \\\$values{$rePath}\\.$/");
 
-        new RecursiveUnwrapperVisitor()->cycle([], $stack);
+        (new RecursiveUnwrapperVisitor())->cycle([], $stack);
     }
 
     /**

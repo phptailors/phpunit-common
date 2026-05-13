@@ -24,7 +24,7 @@ use Tailors\PHPUnit\InvalidArgumentException;
  */
 final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
 {
-    public const string UNIQUE_TAG = 'unwrapped-values:$1$zIlgusJc$ZZCyNRPOX1SbpKdzoD2hU/';
+    public const UNIQUE_TAG = 'unwrapped-values:$1$zIlgusJc$ZZCyNRPOX1SbpKdzoD2hU/';
 
     private array $result;
 
@@ -47,7 +47,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     /**
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function enter(array|ValuesInterface $node, array $stack): bool
     {
         if ($node instanceof ValuesInterface) {
@@ -75,7 +74,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     /**
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function leave(array|ValuesInterface $node, array $stack, bool $iterating): void
     {
         if (!$iterating) {
@@ -94,7 +92,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
     /**
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function visit(mixed $node, array $stack, bool $iterating): void
     {
         $this->set($stack, $node);
@@ -105,7 +102,6 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface
      *
      * @psalm-param list<StackItem> $stack
      */
-    #[\Override]
     public function cycle(array|ValuesInterface $node, array $stack): never
     {
         self::throwCircular($stack);

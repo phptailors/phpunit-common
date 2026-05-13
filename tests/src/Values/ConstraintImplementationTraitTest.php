@@ -11,7 +11,6 @@
 namespace Tailors\PHPUnit\Values;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-#[CoversTrait(ConstraintImplementationTrait::class)]
+#[CoversClass(ConstraintImplementationTrait::class)]
 #[CoversClass(DummyConstraintImplementation::class)]
 #[Small]
 final class ConstraintImplementationTraitTest extends TestCase

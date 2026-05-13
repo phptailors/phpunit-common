@@ -19,7 +19,7 @@ use Tailors\PHPUnit\CircularDependencyException;
  */
 final readonly class RecursiveUnwrapper implements RecursiveUnwrapperInterface
 {
-    public const string UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
+    public const UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
 
     /**
      * Initializes the object.
@@ -36,7 +36,6 @@ final readonly class RecursiveUnwrapper implements RecursiveUnwrapperInterface
      *
      * @throws CircularDependencyException
      */
-    #[\Override]
     public function unwrap(ValuesInterface $values): array
     {
         $traversal = new RecursiveTraversal();

@@ -22,7 +22,6 @@ final class ActualValues extends AbstractValues
     /**
      * @psalm-mutation-free
      */
-    #[\Override]
     public function actual(): bool
     {
         return true;

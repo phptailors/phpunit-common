@@ -25,7 +25,7 @@ use Tailors\PHPUnit\CircularDependencyException;
 #[Small]
 final class RecursiveUnwrapperTest extends TestCase
 {
-    public const string UNIQUE_TAG = RecursiveUnwrapper::UNIQUE_TAG;
+    public const UNIQUE_TAG = RecursiveUnwrapper::UNIQUE_TAG;
 
     //
     //
@@ -410,7 +410,7 @@ final class RecursiveUnwrapperTest extends TestCase
         $this->expectException(CircularDependencyException::class);
         $this->expectExceptionMessageMatches("/^Circular dependency found in nested values at \\\$values{$rePath}\\.$/");
 
-        new RecursiveUnwrapper()->unwrap($values);
+        (new RecursiveUnwrapper())->unwrap($values);
     }
 }
 // vim: syntax=php sw=4 ts=4 et:

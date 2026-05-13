@@ -19,7 +19,6 @@ final readonly class DummyValueSelectorWrapper implements ValueSelectorWrapperIn
 {
     public function __construct(private ValueSelectorInterface $valueSelector) {}
 
-    #[\Override]
     public function getValueSelector(): ValueSelectorInterface
     {
         return $this->valueSelector;

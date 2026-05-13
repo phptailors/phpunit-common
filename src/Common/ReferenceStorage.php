@@ -32,7 +32,6 @@ final class ReferenceStorage implements \Countable
         $this->objects = new \SplObjectStorage();
     }
 
-    #[\Override]
     public function count(): int
     {
         return count($this->references) + count($this->objects);

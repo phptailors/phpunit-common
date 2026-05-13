@@ -19,7 +19,6 @@ final readonly class DummyValuesWrapper implements ValuesWrapperInterface
 {
     public function __construct(private ValuesInterface $values) {}
 
-    #[\Override]
     public function getValues(): ValuesInterface
     {
         return $this->values;

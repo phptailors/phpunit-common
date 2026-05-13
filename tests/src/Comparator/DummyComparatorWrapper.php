@@ -19,7 +19,6 @@ final readonly class DummyComparatorWrapper implements ComparatorWrapperInterfac
 {
     public function __construct(private ComparatorInterface $comparator) {}
 
-    #[\Override]
     public function getComparator(): ComparatorInterface
     {
         return $this->comparator;

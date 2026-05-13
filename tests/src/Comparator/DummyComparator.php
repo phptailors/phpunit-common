@@ -19,13 +19,11 @@ final readonly class DummyComparator implements ComparatorInterface
 {
     public function __construct(private bool $compare, private string $adjective) {}
 
-    #[\Override]
     public function compare($left, $right): bool
     {
         return $this->compare;
     }
 
-    #[\Override]
     public function adjective(): string
     {
         return $this->adjective;

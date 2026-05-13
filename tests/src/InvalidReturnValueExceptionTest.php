@@ -69,7 +69,7 @@ final class InvalidReturnValueExceptionTest extends TestCase
                 'inexistentFunction', 'string', 123,
             ],
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
-                self::provFromExpectedTypeAndActualValue(...), 'string', null,
+                [self::class, 'provFromExpectedTypeAndActualValue'], 'string', null,
             ],
             'InvalidReturnValueExceptionTest.php:'.__LINE__ => [
                 [self::class, 'inexistentMethod'], 'string', null,

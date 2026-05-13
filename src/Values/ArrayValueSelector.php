@@ -24,7 +24,6 @@ final class ArrayValueSelector extends AbstractValueSelector
     /**
      * @psalm-assert-if-true array|\ArrayAccess $subject
      */
-    #[\Override]
     public function supports(mixed $subject): bool
     {
         return is_array($subject) || $subject instanceof \ArrayAccess;
@@ -34,7 +33,6 @@ final class ArrayValueSelector extends AbstractValueSelector
      * Returns short string explaining the type(s) of subjects the selector
      * supports.
      */
-    #[\Override]
     public function subject(): string
     {
         return 'an array or ArrayAccess';
@@ -43,7 +41,6 @@ final class ArrayValueSelector extends AbstractValueSelector
     /**
      * A name for the values being selected from subject.
      */
-    #[\Override]
     public function selectable(): string
     {
         return 'values';
@@ -57,7 +54,6 @@ final class ArrayValueSelector extends AbstractValueSelector
      *
      * @psalm-param-out mixed $retval
      */
-    #[\Override]
     protected function selectFromSupported(mixed $subject, mixed $key, mixed &$retval = null): bool
     {
         if (self::subjectHasKey($subject, $key)) {

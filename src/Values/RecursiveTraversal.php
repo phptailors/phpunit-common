@@ -45,7 +45,6 @@ final class RecursiveTraversal implements RecursiveTraversalInterface
      *
      * @psalm-param RecursiveVisitorInterface<StackItem> $visitor
      */
-    #[\Override]
     public function walk(ValuesInterface $values, RecursiveVisitorInterface $visitor): void
     {
         $this->seen = new ReferenceStorage();

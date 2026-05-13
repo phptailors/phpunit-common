@@ -32,13 +32,11 @@ final class DummyConstraintImplementation
 
     protected function __construct(public ValuesInterface $expected, public ComparatorInterface $comparator, public ValueSelectorInterface $valueSelector, public RecursiveUnwrapperInterface $unwrapper) {}
 
-    #[\Override]
     protected static function validateExpectations(array $expected, int $argument, int $distance = 1): void
     {
         self::$validateExpectations = [$expected, $argument, $distance];
     }
 
-    #[\Override]
     protected static function makeSelector(): ValueSelectorInterface
     {
         if (null === self::$makeSelector) {
@@ -48,7 +46,6 @@ final class DummyConstraintImplementation
         return self::$makeSelector;
     }
 
-    #[\Override]
     protected static function makeComparator(): ComparatorInterface
     {
         if (null === self::$makeComparator) {

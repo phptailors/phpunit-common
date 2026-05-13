@@ -25,7 +25,6 @@ abstract class AbstractPropertySelector extends AbstractValueSelector
      * A name for the values being selected from subject (in plural,
      * e.g. "values" or "properties").
      */
-    #[\Override]
     public function selectable(): string
     {
         return 'properties';
@@ -35,7 +34,6 @@ abstract class AbstractPropertySelector extends AbstractValueSelector
      * @psalm-param SubjectType $subject
      * @psalm-param array-key   $key
      */
-    #[\Override]
     final protected function selectFromSupported(mixed $subject, mixed $key, mixed &$retval = null): bool
     {
         $method = (str_ends_with((string) $key, '()')) ? substr((string) $key, 0, -2) : null;

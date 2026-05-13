@@ -25,31 +25,26 @@ use PHPUnit\Framework\Constraint\Constraint;
 #[Small]
 final class ConstraintTestCaseTest extends ConstraintTestCase
 {
-    #[\Override]
     public static function subject(): string
     {
         return 'an array or ArrayAccess';
     }
 
-    #[\Override]
     public static function selectable(): string
     {
         return 'values';
     }
 
-    #[\Override]
     public static function adjective(): string
     {
         return 'identical to';
     }
 
-    #[\Override]
     public static function createConstraint(...$args): Constraint
     {
         return ExampleConstraint::create(...$args);
     }
 
-    #[\Override]
     public static function getConstraintClass(): string
     {
         return ExampleConstraint::class;
