@@ -12,6 +12,7 @@ namespace Tailors\PHPUnit\Values;
 
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\CircularDependencyException;
+use Tailors\PHPUnit\Common\StaticTagInterface;
 use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
@@ -39,6 +40,11 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     public function testImplementsRecursiveVisitorInterface(): void
     {
         self::assertInstanceOf(RecursiveVisitorInterface::class, new RecursiveUnwrapperVisitor());
+    }
+
+    public function testImplementsStaticTagInterface(): void
+    {
+        self::assertInstanceOf(StaticTagInterface::class, new RecursiveUnwrapperVisitor());
     }
 
     public function testInitialResult(): void
@@ -272,6 +278,40 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                 [
                     'args' => [
                         'node' => $s06[2],
+                    ],
+                    'return' => false,
+                ],
+            ],
+            'result' => [
+                'foo' => [],
+            ],
+        ];
+
+        //
+        // 07
+        //
+        $s07 = [new ExpectedValues(), [], new DummyValues(false)];
+
+        yield 'RecursiveUnwrapperVisitorTest.php:'.__LINE__ => [
+            'ctor'  => [false],
+            'calls' => [
+                [
+                    'args' => [
+                        'node' => $s07[0],
+                    ],
+                    'return' => true,
+                    'next'   => 'foo',
+                ],
+                [
+                    'args' => [
+                        'node' => $s07[1],
+                    ],
+                    'return' => true,
+                    'next'   => 'bar',
+                ],
+                [
+                    'args' => [
+                        'node' => $s07[2],
                     ],
                     'return' => false,
                 ],

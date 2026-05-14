@@ -10,6 +10,9 @@
 
 namespace Tailors\PHPUnit\Values;
 
+use Tailors\PHPUnit\Common\FamilyInterface;
+use Tailors\PHPUnit\Common\TagInterface;
+
 /**
  * An array of actual or expected values.
  *
@@ -20,21 +23,12 @@ namespace Tailors\PHPUnit\Values;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-interface ValuesInterface extends \Traversable, \ArrayAccess, \Countable
+interface ValuesInterface extends \Traversable, \ArrayAccess, \Countable, FamilyInterface, TagInterface
 {
     /**
      * Returns true if this object represents actual values (as opposite to expected values).
      */
     public function actual(): bool;
-
-    /**
-     * Returns the tag for category of the values. Different tags shall be
-     * returned for different categories, such as selected array values, key
-     * sorted array values, object properties, class properties, etc.
-     *
-     * @psalm-return non-empty-string
-     */
-    public function tag(): string;
 
     /**
      * @param array|\Traversable $array

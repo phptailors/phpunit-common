@@ -10,6 +10,8 @@
 
 namespace Tailors\PHPUnit\Values;
 
+use Tailors\PHPUnit\Common\StaticRandomStrings;
+
 /**
  * An array of expected values.
  *
@@ -21,31 +23,11 @@ namespace Tailors\PHPUnit\Values;
  */
 abstract class AbstractValues extends \ArrayObject implements ValuesInterface
 {
-    public const TAGSIZE = 20;
-
-    /**
-     * @var ?string
-     *
-     * @psalm-var ?non-empty-string
-     */
-    private $tag;
-
-    /**
-     * @var ?string
-     *
-     * @psalm-var ?non-empty-string
-     */
-    private static $abstractValuesTag;
-
     /**
      * @param array|\Traversable $array
-     *
-     * @psalm-param ?non-empty-string $tag
      */
-    final public function __construct($array = [], ?string $tag = null)
+    protected function __construct($array = [])
     {
-        $this->tag = $tag;
-
         if (!is_array($array)) {
             $array = iterator_to_array($array);
         }
@@ -56,45 +38,19 @@ abstract class AbstractValues extends \ArrayObject implements ValuesInterface
     /**
      * @psalm-return non-empty-string
      */
-    final public static function abstractValuesTag(): string
+    final protected function familyTag(): string
     {
-        if (null === self::$abstractValuesTag) {
-            // @codeCoverageIgnoreStart
-            try {
-                $hex = bin2hex(random_bytes(self::TAGSIZE));
-            } catch (\Exception $_e) {
-                $hex = 'b431aa5424c80003a46c769389f28d0bcde7bf21';
-            }
-            self::$abstractValuesTag = "abstract-values:{$hex}";
-            // @codeCoverageIgnoreEnd
-        }
+        $family = $this->family();
 
-        return self::$abstractValuesTag;
+        $hex = StaticRandomStrings::get($family, $this->fallbackFamilyString());
+
+        return "{$family}:{$hex}";
     }
 
     /**
      * @psalm-return non-empty-string
      */
-    final public function tag(): string
-    {
-        return $this->tag ?? self::abstractValuesTag();
-    }
-
-    /**
-     * @param array|\Traversable $array
-     */
-    final public function createActualValues($array = []): ValuesInterface
-    {
-        return new ActualValues($array, $this->tag);
-    }
-
-    /**
-     * @param array|\Traversable $array
-     */
-    final public function createExpectedValues($array = []): ValuesInterface
-    {
-        return new ExpectedValues($array, $this->tag);
-    }
+    abstract protected function fallbackFamilyString(): string;
 }
 
 // vim: syntax=php sw=4 ts=4 et:

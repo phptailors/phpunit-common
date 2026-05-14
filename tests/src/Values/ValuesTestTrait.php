@@ -10,6 +10,8 @@
 
 namespace Tailors\PHPUnit\Values;
 
+use Tailors\PHPUnit\Common\StaticRandomStrings;
+
 /**
  * @small
  *
@@ -86,27 +88,23 @@ trait ValuesTestTrait
         self::assertSame(ActualValues::class === $class, $object->actual());
     }
 
-    public function testAbstractValuesTag(): void
-    {
-        $this->assertSame(AbstractValues::abstractValuesTag(), ActualValues::abstractValuesTag());
-        $this->assertSame(AbstractValues::abstractValuesTag(), ExpectedValues::abstractValuesTag());
-    }
-
     // @codeCoverageIgnoreStart
     public static function provTag(): iterable
     {
-        $defaultTag = ActualValues::abstractValuesTag();
+        $family = __namespace__.'\GenericValues';
+        $familyHex = StaticRandomStrings::get($family);
+        $familyTag = "{$family}:{$familyHex}";
 
         // #0
         yield 'ValuesTestTrait.php:'.__LINE__ => [
             'args'   => [],
-            'expect' => $defaultTag,
+            'expect' => $familyTag,
         ];
 
         // #1
         yield 'ValuesTestTrait.php:'.__LINE__ => [
             'args'   => [['foo' => 'FOO']],
-            'expect' => $defaultTag,
+            'expect' => $familyTag,
         ];
 
         // #2

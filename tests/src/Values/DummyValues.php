@@ -25,16 +25,19 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
     private $actual;
 
     /**
-     * @param array|object $array
+     * @param array|\Traversable $array
      */
     public function __construct(
         bool $actual,
-        $array = [],
-        int $flags = 0,
-        string $iteratorClass = \ArrayIterator::class
+        $array = []
     ) {
         $this->actual = $actual;
-        parent::__construct($array, $flags, $iteratorClass);
+
+        if (!is_array($array)) {
+            $array = iterator_to_array($array);
+        }
+
+        parent::__construct($array);
     }
 
     /**
@@ -48,9 +51,17 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
     /**
      * @psalm-return non-empty-string
      */
+    public function family(): string
+    {
+        return self::class;
+    }
+
+    /**
+     * @psalm-return non-empty-string
+     */
     public function tag(): string
     {
-        return 'dummy-values';
+        return self::class.':a1a44e79c791a1fe22ac49067eef00b222d10131';
     }
 
     /**
@@ -60,11 +71,7 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
      */
     public function createActualValues($array = []): ValuesInterface
     {
-        if (!is_array($array)) {
-            $array = iterator_to_array($array);
-        }
-
-        return new self($array);
+        return new self(true, $array);
     }
 
     /**
@@ -74,11 +81,7 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
      */
     public function createExpectedValues($array = []): ValuesInterface
     {
-        if (!is_array($array)) {
-            $array = iterator_to_array($array);
-        }
-
-        return new self($array);
+        return new self(false, $array);
     }
 }
 
