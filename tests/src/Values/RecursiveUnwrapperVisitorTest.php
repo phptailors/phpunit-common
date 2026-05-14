@@ -15,6 +15,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 use Tailors\PHPUnit\CircularDependencyException;
+use Tailors\PHPUnit\Common\StaticTagInterface;
+use Tailors\PHPUnit\InvalidArgumentException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise
@@ -29,8 +31,6 @@ use Tailors\PHPUnit\CircularDependencyException;
 #[Small]
 final class RecursiveUnwrapperVisitorTest extends TestCase
 {
-    public const UNIQUE_TAG = RecursiveUnwrapperVisitor::UNIQUE_TAG;
-
     //
     //
     // TESTS
@@ -40,6 +40,11 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     public function testImplementsRecursiveVisitorInterface(): void
     {
         self::assertInstanceOf(RecursiveVisitorInterface::class, new RecursiveUnwrapperVisitor());
+    }
+
+    public function testImplementsStaticTagInterface(): void
+    {
+        self::assertInstanceOf(StaticTagInterface::class, new RecursiveUnwrapperVisitor());
     }
 
     public function testInitialResult(): void
@@ -99,6 +104,10 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
      */
     public static function provEnterLeave(): iterable
     {
+        $tagk = RecursiveUnwrapperVisitor::tag();
+        $tagg = (new ExpectedValues())->tag();
+        $tagd = (new DummyValues(false))->tag();
+
         //
         // 01
         //
@@ -130,7 +139,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                     'return' => true,
                 ],
             ],
-            'result' => [self::UNIQUE_TAG => true],
+            'result' => [$tagk => $tagg],
         ];
 
         //
@@ -166,10 +175,10 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
             'result' => [
                 'foo' => [
                     'bar' => [
-                        self::UNIQUE_TAG => true,
+                        $tagk => $tagg,
                     ],
                 ],
-                self::UNIQUE_TAG => true,
+                $tagk => $tagg,
             ],
         ];
 
@@ -203,8 +212,8 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                 ],
             ],
             'result' => [
-                'foo'            => [],
-                self::UNIQUE_TAG => true,
+                'foo' => [],
+                $tagk => $tagg,
             ],
         ];
 
@@ -277,6 +286,79 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                 'foo' => [],
             ],
         ];
+
+        //
+        // 07
+        //
+        $s07 = [new ExpectedValues(), [], new DummyValues(false)];
+
+        yield 'RecursiveUnwrapperVisitorTest.php:'.__LINE__ => [
+            'ctor'  => [],
+            'calls' => [
+                [
+                    'args' => [
+                        'node' => $s07[0],
+                    ],
+                    'return' => true,
+                    'next'   => 'foo',
+                ],
+                [
+                    'args' => [
+                        'node' => $s07[1],
+                    ],
+                    'return' => true,
+                    'next'   => 'bar',
+                ],
+                [
+                    'args' => [
+                        'node' => $s07[2],
+                    ],
+                    'return' => true,
+                ],
+            ],
+            'result' => [
+                'foo' => [
+                    'bar' => [
+                        $tagk => $tagd,
+                    ],
+                ],
+                $tagk => $tagg,
+            ],
+        ];
+
+        //
+        // 08
+        //
+        $s08 = [new ExpectedValues(), [], new DummyValues(true)];
+
+        yield 'RecursiveUnwrapperVisitorTest.php:'.__LINE__ => [
+            'ctor'  => [false],
+            'calls' => [
+                [
+                    'args' => [
+                        'node' => $s08[0],
+                    ],
+                    'return' => true,
+                    'next'   => 'foo',
+                ],
+                [
+                    'args' => [
+                        'node' => $s08[1],
+                    ],
+                    'return' => true,
+                    'next'   => 'bar',
+                ],
+                [
+                    'args' => [
+                        'node' => $s08[2],
+                    ],
+                    'return' => false,
+                ],
+            ],
+            'result' => [
+                'foo' => [],
+            ],
+        ];
     }
 
     /**
@@ -318,6 +400,9 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
      */
     public static function provVisit(): iterable
     {
+        $tagk = RecursiveUnwrapperVisitor::tag();
+        $tagg = (new ExpectedValues())->tag();
+
         //
         // 01
         //
@@ -384,9 +469,9 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                 ],
             ],
             'result' => [
-                'foo'            => 'FOO',
-                'bar'            => ['gez' => 'GEZ'],
-                self::UNIQUE_TAG => true,
+                'foo' => 'FOO',
+                'bar' => ['gez' => 'GEZ'],
+                $tagk => $tagg,
             ],
         ];
     }
@@ -418,6 +503,17 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
         $visitor->leave($root, $stack, $iter);
 
         $this->assertSame($result, $visitor->result());
+    }
+
+    public function testVisitThrowsInvalidArgumentException(): void
+    {
+        $visitor = new RecursiveUnwrapperVisitor();
+
+        $message = '/Argument 2 passed to [a-zA-Z\\\\]*RecursiveUnwrapperVisitor::set\(\) must be an array, string given/';
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches($message);
+
+        $visitor->visit('', [], false);
     }
 }
 // vim: syntax=php sw=4 ts=4 et:

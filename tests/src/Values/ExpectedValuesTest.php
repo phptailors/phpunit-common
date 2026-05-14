@@ -11,6 +11,7 @@
 namespace Tailors\PHPUnit\Values;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
@@ -19,12 +20,14 @@ use PHPUnit\Framework\TestCase;
  *
  * @psalm-internal Tailors\PHPUnit
  */
+#[CoversClass(AbstractGenericValues::class)]
+#[CoversClass(AbstractValues::class)]
 #[CoversClass(ExpectedValues::class)]
-#[CoversClass(ValuesTestTrait::class)]
+#[CoversTrait(GenericValuesTestTrait::class)]
 #[Small]
 final class ExpectedValuesTest extends TestCase
 {
-    use ValuesTestTrait;
+    use GenericValuesTestTrait;
 
     // required by ValuesTestTrait
     public static function getValuesClass(): string
