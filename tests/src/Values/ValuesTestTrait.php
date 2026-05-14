@@ -91,7 +91,7 @@ trait ValuesTestTrait
     // @codeCoverageIgnoreStart
     public static function provTag(): iterable
     {
-        $family = __namespace__.'\GenericValues';
+        $family = __NAMESPACE__.'\GenericValues';
         $familyHex = StaticRandomStrings::get($family);
         $familyTag = "{$family}:{$familyHex}";
 

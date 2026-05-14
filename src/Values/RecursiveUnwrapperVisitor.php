@@ -59,7 +59,7 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface, Stat
     {
         $hex = StaticRandomStrings::get(self::class, '4694a81d074f3386a9b8c7c2ad04914e120f1a10');
 
-        return __namespace__."\UnwrappedValues:{$hex}";
+        return __NAMESPACE__."\UnwrappedValues:{$hex}";
     }
 
     /**

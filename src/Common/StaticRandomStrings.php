@@ -24,7 +24,7 @@ final class StaticRandomStrings
     /**
      * @param mixed $key
      *
-     * @psalm-param array-key $key
+     * @psalm-param array-key         $key
      * @psalm-param ?non-empty-string $fallback
      *
      * @psalm-return non-empty-string

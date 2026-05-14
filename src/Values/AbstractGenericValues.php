@@ -43,7 +43,7 @@ abstract class AbstractGenericValues extends AbstractValues
      */
     final public function family(): string
     {
-        return __namespace__.'\GenericValues';
+        return __NAMESPACE__.'\GenericValues';
     }
 
     /**
