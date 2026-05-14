@@ -11,16 +11,13 @@
 namespace Tailors\PHPUnit\Values;
 
 /**
- * @internal This interface is not covered by the backward compatibility promise
+ * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-interface ValueSelectorWrapperInterface
+final class RecursiveSelectorState
 {
-    /**
-     * Returns an instance of ValueSelectorInterface.
-     */
-    public function getValueSelector(): ValueSelectorInterface;
+    public function __construct(public readonly mixed $subject, public array|ValuesInterface $result) {}
 }
 
 // vim: syntax=php sw=4 ts=4 et:
