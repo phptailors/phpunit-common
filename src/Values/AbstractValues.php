@@ -40,12 +40,17 @@ abstract class AbstractValues extends \ArrayObject implements ValuesInterface
      */
     final protected function familyTag(): string
     {
-        $family = $this->family();
+        $family = $this->familyName();
 
-        $hex = StaticRandomStrings::get($family, $this->fallbackFamilyString());
+        $random = StaticRandomStrings::get($family, $this->fallbackFamilyString());
 
-        return "{$family}:{$hex}";
+        return "{$family}:{$random}";
     }
+
+    /**
+     * @psalm-return non-empty-string
+     */
+    abstract protected function familyName(): string;
 
     /**
      * @psalm-return non-empty-string

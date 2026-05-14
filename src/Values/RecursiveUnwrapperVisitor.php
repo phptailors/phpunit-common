@@ -87,7 +87,7 @@ final class RecursiveUnwrapperVisitor implements RecursiveVisitorInterface, Stat
                     break;
                 }
             }
-            $iterate = $root->family() === $node->family() && $root->actual() === $node->actual();
+            $iterate = $root->actual() === $node->actual();
         } else {
             $iterate = true;
         }

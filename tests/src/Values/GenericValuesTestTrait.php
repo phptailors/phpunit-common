@@ -19,7 +19,7 @@ use Tailors\PHPUnit\Common\StaticRandomStrings;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-trait ValuesTestTrait
+trait GenericValuesTestTrait
 {
     abstract public static function getValuesClass(): string;
 
@@ -45,25 +45,25 @@ trait ValuesTestTrait
     public static function provValues(): iterable
     {
         // #0
-        yield 'ValuesTestTrait.php:'.__LINE__ => [
+        yield 'GenericValuesTestTrait.php:'.__LINE__ => [
             'args'   => [],
             'expect' => [],
         ];
 
         // #1
-        yield 'ValuesTestTrait.php:'.__LINE__ => [
+        yield 'GenericValuesTestTrait.php:'.__LINE__ => [
             'args'   => [[]],
             'expect' => [],
         ];
 
         // #2
-        yield 'ValuesTestTrait.php:'.__LINE__ => [
+        yield 'GenericValuesTestTrait.php:'.__LINE__ => [
             'args'   => [['foo' => 'FOO']],
             'expect' => ['foo' => 'FOO'],
         ];
 
         // #3
-        yield 'ValuesTestTrait.php:'.__LINE__ => [
+        yield 'GenericValuesTestTrait.php:'.__LINE__ => [
             'args'   => [new \ArrayObject(['foo' => 'FOO'])],
             'expect' => ['foo' => 'FOO'],
         ];
@@ -96,19 +96,19 @@ trait ValuesTestTrait
         $familyTag = "{$family}:{$familyHex}";
 
         // #0
-        yield 'ValuesTestTrait.php:'.__LINE__ => [
+        yield 'GenericValuesTestTrait.php:'.__LINE__ => [
             'args'   => [],
             'expect' => $familyTag,
         ];
 
         // #1
-        yield 'ValuesTestTrait.php:'.__LINE__ => [
+        yield 'GenericValuesTestTrait.php:'.__LINE__ => [
             'args'   => [['foo' => 'FOO']],
             'expect' => $familyTag,
         ];
 
         // #2
-        yield 'ValuesTestTrait.php:'.__LINE__ => [
+        yield 'GenericValuesTestTrait.php:'.__LINE__ => [
             'args'   => [['foo' => 'FOO'], 'TAGFOO'],
             'expect' => 'TAGFOO',
         ];
@@ -135,16 +135,6 @@ trait ValuesTestTrait
         $class = self::getValuesClass();
         $object = new $class([], 'TAGFOO');
         $actual = $object->createActualValues(['foo' => 'FOO']);
-
-        $this->assertSame(['foo' => 'FOO'], (array) $actual);
-        $this->assertSame('TAGFOO', $actual->tag());
-    }
-
-    public function testCreateExpectedValues(): void
-    {
-        $class = self::getValuesClass();
-        $object = new $class([], 'TAGFOO');
-        $actual = $object->createExpectedValues(['foo' => 'FOO']);
 
         $this->assertSame(['foo' => 'FOO'], (array) $actual);
         $this->assertSame('TAGFOO', $actual->tag());

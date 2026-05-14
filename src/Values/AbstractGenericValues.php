@@ -41,7 +41,7 @@ abstract class AbstractGenericValues extends AbstractValues
     /**
      * @psalm-return non-empty-string
      */
-    final public function family(): string
+    final public function familyName(): string
     {
         return __NAMESPACE__.'\GenericValues';
     }
@@ -60,14 +60,6 @@ abstract class AbstractGenericValues extends AbstractValues
     final public function createActualValues($array = []): ValuesInterface
     {
         return new ActualValues($array, $this->tag);
-    }
-
-    /**
-     * @param array|\Traversable $array
-     */
-    final public function createExpectedValues($array = []): ValuesInterface
-    {
-        return new ExpectedValues($array, $this->tag);
     }
 
     final protected function fallbackFamilyString(): string

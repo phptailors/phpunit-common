@@ -106,7 +106,8 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     public static function provEnterLeave(): iterable
     {
         $tagk = RecursiveUnwrapperVisitor::tag();
-        $tagv = (new ExpectedValues())->tag();
+        $tagg = (new ExpectedValues())->tag();
+        $tagd = (new DummyValues(false))->tag();
 
         //
         // 01
@@ -139,7 +140,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                     'return' => true,
                 ],
             ],
-            'result' => [$tagk => $tagv],
+            'result' => [$tagk => $tagg],
         ];
 
         //
@@ -175,10 +176,10 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
             'result' => [
                 'foo' => [
                     'bar' => [
-                        $tagk => $tagv,
+                        $tagk => $tagg,
                     ],
                 ],
-                $tagk => $tagv,
+                $tagk => $tagg,
             ],
         ];
 
@@ -213,7 +214,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
             ],
             'result' => [
                 'foo' => [],
-                $tagk => $tagv,
+                $tagk => $tagg,
             ],
         ];
 
@@ -293,7 +294,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
         $s07 = [new ExpectedValues(), [], new DummyValues(false)];
 
         yield 'RecursiveUnwrapperVisitorTest.php:'.__LINE__ => [
-            'ctor'  => [false],
+            'ctor'  => [],
             'calls' => [
                 [
                     'args' => [
@@ -312,6 +313,45 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
                 [
                     'args' => [
                         'node' => $s07[2],
+                    ],
+                    'return' => true,
+                ],
+            ],
+            'result' => [
+                'foo' => [
+                    'bar' => [
+                        $tagk => $tagd,
+                    ],
+                ],
+                $tagk => $tagg,
+            ],
+        ];
+
+        //
+        // 08
+        //
+        $s08 = [new ExpectedValues(), [], new DummyValues(true)];
+
+        yield 'RecursiveUnwrapperVisitorTest.php:'.__LINE__ => [
+            'ctor'  => [false],
+            'calls' => [
+                [
+                    'args' => [
+                        'node' => $s08[0],
+                    ],
+                    'return' => true,
+                    'next'   => 'foo',
+                ],
+                [
+                    'args' => [
+                        'node' => $s08[1],
+                    ],
+                    'return' => true,
+                    'next'   => 'bar',
+                ],
+                [
+                    'args' => [
+                        'node' => $s08[2],
                     ],
                     'return' => false,
                 ],
@@ -365,7 +405,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
     public static function provVisit(): iterable
     {
         $tagk = RecursiveUnwrapperVisitor::tag();
-        $tagv = (new ExpectedValues())->tag();
+        $tagg = (new ExpectedValues())->tag();
 
         //
         // 01
@@ -435,7 +475,7 @@ final class RecursiveUnwrapperVisitorTest extends TestCase
             'result' => [
                 'foo' => 'FOO',
                 'bar' => ['gez' => 'GEZ'],
-                $tagk => $tagv,
+                $tagk => $tagg,
             ],
         ];
     }

@@ -10,7 +10,6 @@
 
 namespace Tailors\PHPUnit\Values;
 
-use Tailors\PHPUnit\Common\FamilyInterface;
 use Tailors\PHPUnit\Common\TagInterface;
 
 /**
@@ -23,7 +22,7 @@ use Tailors\PHPUnit\Common\TagInterface;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-interface ValuesInterface extends \Traversable, \ArrayAccess, \Countable, FamilyInterface, TagInterface
+interface ValuesInterface extends \Traversable, \ArrayAccess, \Countable, TagInterface
 {
     /**
      * Returns true if this object represents actual values (as opposite to expected values).
@@ -34,11 +33,6 @@ interface ValuesInterface extends \Traversable, \ArrayAccess, \Countable, Family
      * @param array|\Traversable $array
      */
     public function createActualValues($array = []): ValuesInterface;
-
-    /**
-     * @param array|\Traversable $array
-     */
-    public function createExpectedValues($array = []): ValuesInterface;
 }
 
 // vim: syntax=php sw=4 ts=4 et:
