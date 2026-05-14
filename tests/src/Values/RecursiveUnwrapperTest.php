@@ -22,11 +22,10 @@ use Tailors\PHPUnit\CircularDependencyException;
  * @psalm-internal Tailors\PHPUnit
  */
 #[CoversClass(RecursiveUnwrapper::class)]
+#[CoversClass(RecursiveUnwrapperVisitor::class)]
 #[Small]
 final class RecursiveUnwrapperTest extends TestCase
 {
-    public const string UNIQUE_TAG = RecursiveUnwrapper::UNIQUE_TAG;
-
     //
     //
     // TESTS
@@ -51,11 +50,31 @@ final class RecursiveUnwrapperTest extends TestCase
         $expectValues = ['[baz => BAZ]' => new ExpectedValues(['baz' => 'BAZ'])];
         $arrayObject = ['[baz => BAZ]' => new \ArrayObject(['baz' => 'BAZ'])];
 
+        $tagk = RecursiveUnwrapperVisitor::tag();
+        $tagg = new ExpectedValues()->tag();
+        $tagd = new DummyValues(false)->tag();
+
         yield 'RecursiveUnwrapperTest.php:'.__LINE__ => [
             'args'   => [],
             'values' => new ExpectedValues([]),
             'expect' => [
-                self::UNIQUE_TAG => true,
+                $tagk => $tagg,
+            ],
+        ];
+
+        yield 'RecursiveUnwrapperTest.php:'.__LINE__ => [
+            'args'   => [],
+            'values' => new DummyValues(false, []),
+            'expect' => [
+                $tagk => $tagd,
+            ],
+        ];
+
+        yield 'RecursiveUnwrapperTest.php:'.__LINE__ => [
+            'args'   => [],
+            'values' => new DummyValues(true, []),
+            'expect' => [
+                $tagk => $tagd,
             ],
         ];
 
@@ -65,8 +84,8 @@ final class RecursiveUnwrapperTest extends TestCase
                 'foo' => 'FOO',
             ]),
             'expect' => [
-                'foo'            => 'FOO',
-                self::UNIQUE_TAG => true,
+                'foo' => 'FOO',
+                $tagk => $tagg,
             ],
         ];
 
@@ -105,7 +124,7 @@ final class RecursiveUnwrapperTest extends TestCase
                     'baz' => 'BAZ',
                     'qux' => 'QUX',
                 ],
-                self::UNIQUE_TAG => true,
+                $tagk => $tagg,
             ],
         ];
 
@@ -120,10 +139,10 @@ final class RecursiveUnwrapperTest extends TestCase
             'expect' => [
                 'foo' => 'FOO',
                 'bar' => [
-                    'baz'            => 'BAZ',
-                    self::UNIQUE_TAG => true,
+                    'baz' => 'BAZ',
+                    $tagk => $tagg,
                 ],
-                self::UNIQUE_TAG => true,
+                $tagk => $tagg,
             ],
         ];
 
@@ -138,10 +157,10 @@ final class RecursiveUnwrapperTest extends TestCase
             'expect' => [
                 'foo' => 'FOO',
                 'bar' => [
-                    'baz'            => 'BAZ',
-                    self::UNIQUE_TAG => true,
+                    'baz' => 'BAZ',
+                    $tagk => $tagg,
                 ],
-                self::UNIQUE_TAG => true,
+                $tagk => $tagg,
             ],
         ];
 
@@ -158,16 +177,16 @@ final class RecursiveUnwrapperTest extends TestCase
                 'foo' => 'FOO',
                 'bar' => [
                     'qux' => [
-                        'baz'            => 'BAZ',
-                        self::UNIQUE_TAG => true,
+                        'baz' => 'BAZ',
+                        $tagk => $tagg,
                     ],
                     0 => [
-                        'fred'           => 'FRED',
-                        self::UNIQUE_TAG => true,
+                        'fred' => 'FRED',
+                        $tagk  => $tagg,
                     ],
-                    self::UNIQUE_TAG => true,
+                    $tagk => $tagg,
                 ],
-                self::UNIQUE_TAG => true,
+                $tagk => $tagg,
             ],
         ];
 
@@ -184,16 +203,16 @@ final class RecursiveUnwrapperTest extends TestCase
                 'foo' => 'FOO',
                 'bar' => [
                     'qux' => [
-                        'baz'            => 'BAZ',
-                        self::UNIQUE_TAG => true,
+                        'baz' => 'BAZ',
+                        $tagk => $tagg,
                     ],
                     0 => [
-                        'fred'           => 'FRED',
-                        self::UNIQUE_TAG => true,
+                        'fred' => 'FRED',
+                        $tagk  => $tagg,
                     ],
-                    self::UNIQUE_TAG => true,
+                    $tagk => $tagg,
                 ],
-                self::UNIQUE_TAG => true,
+                $tagk => $tagg,
             ],
         ];
 
@@ -204,9 +223,9 @@ final class RecursiveUnwrapperTest extends TestCase
                 'bar' => $actualValues['[baz => BAZ]'],
             ]),
             'expect' => [
-                'foo'            => 'FOO',
-                'bar'            => $actualValues['[baz => BAZ]'],
-                self::UNIQUE_TAG => true,
+                'foo' => 'FOO',
+                'bar' => $actualValues['[baz => BAZ]'],
+                $tagk => $tagg,
             ],
         ];
 
@@ -217,9 +236,9 @@ final class RecursiveUnwrapperTest extends TestCase
                 'bar' => $expectValues['[baz => BAZ]'],
             ]),
             'expect' => [
-                'foo'            => 'FOO',
-                'bar'            => $expectValues['[baz => BAZ]'],
-                self::UNIQUE_TAG => true,
+                'foo' => 'FOO',
+                'bar' => $expectValues['[baz => BAZ]'],
+                $tagk => $tagg,
             ],
         ];
 
@@ -230,9 +249,9 @@ final class RecursiveUnwrapperTest extends TestCase
                 'bar' => $arrayObject['[baz => BAZ]'],
             ]),
             'expect' => [
-                'foo'            => 'FOO',
-                'bar'            => $arrayObject['[baz => BAZ]'],
-                self::UNIQUE_TAG => true,
+                'foo' => 'FOO',
+                'bar' => $arrayObject['[baz => BAZ]'],
+                $tagk => $tagg,
             ],
         ];
 
@@ -243,9 +262,9 @@ final class RecursiveUnwrapperTest extends TestCase
                 'bar' => $arrayObject['[baz => BAZ]'],
             ]),
             'expect' => [
-                'foo'            => 'FOO',
-                'bar'            => $arrayObject['[baz => BAZ]'],
-                self::UNIQUE_TAG => true,
+                'foo' => 'FOO',
+                'bar' => $arrayObject['[baz => BAZ]'],
+                $tagk => $tagg,
             ],
         ];
 
@@ -288,6 +307,24 @@ final class RecursiveUnwrapperTest extends TestCase
                 'bar' => [
                     'baz' => 'BAZ',
                 ],
+            ],
+        ];
+
+        yield 'RecursiveUnwrapperTest.php:'.__LINE__ => [
+            'args'   => [],
+            'values' => new ExpectedValues([
+                'foo' => 'FOO',
+                'bar' => new DummyValuesWrapper(new DummyValues(false, [
+                    'baz' => 'BAZ',
+                ])),
+            ]),
+            'expect' => [
+                'foo' => 'FOO',
+                'bar' => [
+                    'baz' => 'BAZ',
+                    $tagk => $tagd,
+                ],
+                $tagk => $tagg,
             ],
         ];
     }
