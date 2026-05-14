@@ -20,17 +20,15 @@ namespace Tailors\PHPUnit\Values;
 final class DummyValues extends \ArrayObject implements ValuesInterface
 {
     /**
-     * @var ?bool
+     * @var bool
      */
     private $actual;
 
     /**
      * @param array|\Traversable $array
      */
-    public function __construct(
-        bool $actual,
-        $array = []
-    ) {
+    public function __construct(bool $actual, $array = [])
+    {
         $this->actual = $actual;
 
         if (!is_array($array)) {
