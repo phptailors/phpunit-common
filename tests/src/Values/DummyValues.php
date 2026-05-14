@@ -51,14 +51,6 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
     /**
      * @psalm-return non-empty-string
      */
-    public function family(): string
-    {
-        return self::class;
-    }
-
-    /**
-     * @psalm-return non-empty-string
-     */
     public function tag(): string
     {
         return self::class.':a1a44e79c791a1fe22ac49067eef00b222d10131';
@@ -72,16 +64,6 @@ final class DummyValues extends \ArrayObject implements ValuesInterface
     public function createActualValues($array = []): ValuesInterface
     {
         return new self(true, $array);
-    }
-
-    /**
-     * @param array|\Traversable $array
-     *
-     * @psalm-param array|\Traversable<array-key,mixed> $array
-     */
-    public function createExpectedValues($array = []): ValuesInterface
-    {
-        return new self(false, $array);
     }
 }
 

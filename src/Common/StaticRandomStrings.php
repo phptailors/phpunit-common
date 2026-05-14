@@ -37,15 +37,15 @@ final class StaticRandomStrings
         if (null === ($strings[$key] ?? null)) {
             try {
                 $hex = bin2hex(random_bytes(self::STRINGLEN / 2));
-            } catch (\Exception $e) {
                 // @codeCoverageIgnoreStart
+            } catch (\Exception $e) {
                 if (null === $fallback) {
                     /** @psalm-suppress MissingThrowsDocblock */
                     throw $e;
                 }
                 $hex = $fallback;
-                // @codeCoverageIgnoreEnd
             }
+            // @codeCoverageIgnoreEnd
             $strings[$key] = $hex;
         }
 
