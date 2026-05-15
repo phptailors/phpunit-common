@@ -15,14 +15,9 @@ namespace Tailors\PHPUnit\Values;
  *
  * @psalm-internal Tailors\PHPUnit
  */
-final readonly class DummyValueSelectorWrapper implements ValueSelectorWrapperInterface
+final class RecursiveSelectorState
 {
-    public function __construct(private ValueSelectorInterface $valueSelector) {}
-
-    #[\Override]
-    public function getValueSelector(): ValueSelectorInterface
-    {
-        return $this->valueSelector;
-    }
+    public function __construct(public readonly mixed $subject, public array|ValuesInterface $result) {}
 }
+
 // vim: syntax=php sw=4 ts=4 et:
