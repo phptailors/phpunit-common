@@ -708,25 +708,7 @@ final class RecursiveSelectorVisitorTest extends TestCase
         //
         // 07
         //
-        $s07 = new DummyValueSelector(fn ($subject): bool => is_object($subject) && $subject instanceof \Exception, function ($subject, $key, &$retval): bool {
-            if (!is_object($subject) || !$subject instanceof \Exception) {
-                return false;
-            }
-
-            switch ($key) {
-                case 'message':
-                    $retval = $subject->getMessage();
-
-                    return true;
-
-                case 'code':
-                    $retval = $subject->getCode();
-
-                    return true;
-            }
-
-            return false;
-        });
+        $s07 = self::getExceptionPropertySelector();
 
         yield 'RecursiveSelectorVisitorTest.php:'.__LINE__ => [
             'ctor'   => [$selector, new \Exception('foo', 123)],
@@ -831,6 +813,32 @@ final class RecursiveSelectorVisitorTest extends TestCase
                 $retval = $subject[$key];
 
                 return true;
+            }
+        );
+    }
+
+    private static function getExceptionPropertySelector(): DummyValueSelector
+    {
+        return new DummyValueSelector(
+            fn ($subject): bool => is_object($subject) && $subject instanceof \Exception,
+            function ($subject, $key, &$retval): bool {
+                if (!is_object($subject) || !$subject instanceof \Exception) {
+                    return false;
+                }
+
+                switch ($key) {
+                    case 'message':
+                        $retval = $subject->getMessage();
+
+                        return true;
+
+                    case 'code':
+                        $retval = $subject->getCode();
+
+                        return true;
+                }
+
+                return false;
             }
         );
     }
