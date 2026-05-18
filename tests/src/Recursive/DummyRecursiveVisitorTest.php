@@ -8,14 +8,15 @@
  * View the LICENSE file for full copyright and license information.
  */
 
-namespace Tailors\PHPUnit\Values;
+namespace Tailors\PHPUnit\Recursive;
 
 use PHPUnit\Framework\TestCase;
+use Tailors\PHPUnit\Values\ExpectedValues;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\DummyRecursiveVisitor
+ * @covers \Tailors\PHPUnit\Recursive\DummyRecursiveVisitor
  *
  * @internal This class is not covered by the backward compatibility promise
  *
