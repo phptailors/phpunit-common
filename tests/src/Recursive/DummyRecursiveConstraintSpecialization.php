@@ -8,26 +8,27 @@
  * View the LICENSE file for full copyright and license information.
  */
 
-namespace Tailors\PHPUnit\Values;
+namespace Tailors\PHPUnit\Recursive;
 
 use Tailors\PHPUnit\Comparator\ComparatorInterface;
 use Tailors\PHPUnit\Comparator\IdentityComparator;
-use Tailors\PHPUnit\Recursive\RecursiveUnwrapperInterface;
 use Tailors\PHPUnit\Selector\ArrayValueSelector;
 use Tailors\PHPUnit\Selector\ValueSelectorInterface;
+use Tailors\PHPUnit\Values\DummyValues;
+use Tailors\PHPUnit\Values\ValuesInterface;
 
 /**
  * @small
  *
- * @covers \Tailors\PHPUnit\Values\ConstraintImplementationTrait
+ * @covers \Tailors\PHPUnit\Recursive\RecursiveConstraintSpecializationTrait
  *
  * @internal This class is not covered by the backward compatibility promise
  *
  * @psalm-internal Tailors\PHPUnit
  */
-final class DummyConstraintImplementation
+final class DummyRecursiveConstraintSpecialization
 {
-    use ConstraintImplementationTrait;
+    use RecursiveConstraintSpecializationTrait;
 
     public static ?ValueSelectorInterface $makeSelector;
     public static ?ComparatorInterface $makeComparator;
